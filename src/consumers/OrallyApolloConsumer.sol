@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import {IOrallyExecutorsRegistry} from "../interfaces/IOrallyExecutorsRegistry.sol";
 
-contract OrallyPythiaConsumer {
+contract OrallyApolloConsumer {
     IOrallyExecutorsRegistry private registry;
 
     constructor(address _registry) {
@@ -11,13 +11,13 @@ contract OrallyPythiaConsumer {
     }
 
     function isExecutor(address _addr) public view returns (bool) {
-        return registry.isPythiaExecutor(_addr);
+        return registry.isApolloExecutor(_addr);
     }
 
     modifier onlyExecutor() {
-        if (!registry.isPythiaExecutor(msg.sender)) revert PythiaCallerUnauthorized(msg.sender);
+        if (!registry.isApolloExecutor(msg.sender)) revert ApolloCallerUnauthorized(msg.sender);
         _;
     }
 
-    error PythiaCallerUnauthorized(address caller);
+    error ApolloCallerUnauthorized(address caller);
 }

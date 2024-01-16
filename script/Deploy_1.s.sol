@@ -5,7 +5,7 @@ import "forge-std/Script.sol";
 import {console2} from "forge-std/console2.sol";
 
 import {OrallyVerifierOracle} from "src/OrallyVerifierOracle.sol";
-import {OrallyPythiaExecutorsRegistry} from "src/OrallyPythiaExecutorsRegistry.sol";
+import {OrallyExecutorsRegistry} from "src/OrallyExecutorsRegistry.sol";
 import {Multicall} from "src/Multicall.sol";
 
 contract Deploy_1 is Script {
@@ -20,7 +20,7 @@ contract Deploy_1 is Script {
         OrallyVerifierOracle verifier = new OrallyVerifierOracle(msg.sender);
         console2.log("OrallyVerifierOracle deployed at:", address(verifier));
 
-        OrallyPythiaExecutorsRegistry registry = new OrallyPythiaExecutorsRegistry();
+        OrallyExecutorsRegistry registry = new OrallyExecutorsRegistry();
         console2.log("OrallyPythiaExecutorsRegistry deployed at:", address(registry));
 
         Multicall multi = new Multicall(address(registry));
@@ -29,8 +29,8 @@ contract Deploy_1 is Script {
         // Setup
         verifier.addReporter(sybilAddress);
         registry.initialize();
-        registry.add(pmaAddress);
-        registry.add(address(multi));
+        registry.add(keccak256("PYTHIA_EXECUTOR"), pmaAddress);
+        registry.add(keccak256("PYTHIA_EXECUTOR"), address(multi));
 
         vm.stopBroadcast();
     }

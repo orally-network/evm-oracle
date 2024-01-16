@@ -4,9 +4,6 @@ pragma solidity ^0.8.13;
 import "forge-std/Script.sol";
 import {console2} from "forge-std/console2.sol";
 
-import {OrallyVerifierOracle} from "src/OrallyVerifierOracle.sol";
-import {OrallyPythiaExecutorsRegistry} from "src/OrallyPythiaExecutorsRegistry.sol";
-import {Multicall} from "src/Multicall.sol";
 import {ChainlinkStyleOracleSimple} from "src/examples/ChainlinkStyleOracleSimple.sol";
 
 contract Deploy_2 is Script {
