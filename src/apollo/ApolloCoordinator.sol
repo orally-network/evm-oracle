@@ -10,14 +10,10 @@ import {IApolloCoordinator} from "../interfaces/IApolloCoordinator.sol";
  */
 contract ApolloCoordinator is IApolloCoordinator {
     // Counter for generating unique request IDs
-    uint256 private requestCounter;
+    uint256 public requestCounter;
 
-    /**
-     * NOTES:
-     * requestDataFeed probably needs a address target argument as well,
-     * but the user in charge of the Orally account should link that address
-     * to his account with some kind of registry.
-     */
+    // All requests by ID
+    mapping(bytes32 => PriceFeedRequest) public requests;
 
     /**
      * @notice Requests data from the Apollo network.
@@ -25,6 +21,8 @@ contract ApolloCoordinator is IApolloCoordinator {
      * @param callbackGasLimit The gas limit for the callback transaction.
      */
     function requestDataFeed(string memory dataFeedId, uint256 callbackGasLimit) public {
+        bytes32 id = _getRequestId();
+        requests[id] = PriceFeedRequest(id, dataFeedId, callbackGasLimit, msg.sender);
         emit PriceFeedRequested(_getRequestId(), dataFeedId, callbackGasLimit, msg.sender);
     }
 
