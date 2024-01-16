@@ -19,7 +19,7 @@ contract RoundedRandomness is OrallyPythiaConsumer, RoundedRandomnessInterface {
 
     mapping(uint80 => uint64) public rounds;
 
-    constructor(address _pythiaRegistry, string memory _description) OrallyPythiaConsumer(_pythiaRegistry) {
+    constructor(address _executorsRegistry, string memory _description) OrallyPythiaConsumer(_executorsRegistry) {
         description = _description;
     }
 

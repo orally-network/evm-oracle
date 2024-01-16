@@ -49,12 +49,12 @@ Pythia enables developers to automate calling functions on their contracts.
 
 To start using Pythia, developers must inherit from the `OrallyPythiaConsumer.sol` contract which can be found in the `contracts/consumers` directory.
 
-In the constructor of the inheriting contract a Pythia registry address must be passed. This can be found in our documentation and might change depending on the blockchain you are using. The Pythia registry stores addresses of all Pythia executors
+In the constructor of the inheriting contract an Orally Executors Registry address must be passed. This can be found in our documentation and might change depending on the blockchain you are using. The Executors Registry stores addresses of all Pythia executors.
 
 ```cpp
 constructor(
-        address _pythiaRegistry
-    ) OrallyPythiaConsumer(_pythiaRegistry) {}
+        address _executorsRegistry
+    ) OrallyPythiaConsumer(_executorsRegistry) {}
 ```
 
 The function that should be called by Pythia must use the `onlyExecutor` modifier to make sure only allowed executors can call it.

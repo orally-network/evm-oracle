@@ -6,7 +6,7 @@ import {OrallyPythiaConsumer} from "../consumers/OrallyPythiaConsumer.sol";
 contract PythiaExecutionExample is OrallyPythiaConsumer {
     uint256 public value;
 
-    constructor(address _pythiaRegistry) OrallyPythiaConsumer(_pythiaRegistry) {}
+    constructor(address _executorsRegistry) OrallyPythiaConsumer(_executorsRegistry) {}
 
     function updateValue(uint256 _value) external onlyExecutor {
         value = _value;

@@ -6,7 +6,7 @@ import {ISubscriptionOwner} from "./ISubscriptionOwner.sol";
 import {ERC165} from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 
 contract ArtheraMulticall is OrallyPythiaConsumer, ISubscriptionOwner, ERC165 {
-    constructor(address _pythiaRegistry) OrallyPythiaConsumer(_pythiaRegistry) {}
+    constructor(address _executorsRegistry) OrallyPythiaConsumer(_executorsRegistry) {}
 
     struct Call {
         address target;
