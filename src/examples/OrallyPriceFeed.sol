@@ -20,8 +20,8 @@ contract OrallyPriceFeed is OrallyPythiaConsumer, ChainlinkStyleInterface {
     uint256 public latestPriceTimestamp;
     int256 public latestPrice;
 
-    constructor(address _pythiaRegistry, uint8 _decimals, string memory _description)
-        OrallyPythiaConsumer(_pythiaRegistry)
+    constructor(address _executorsRegistry, uint8 _decimals, string memory _description)
+        OrallyPythiaConsumer(_executorsRegistry)
     {
         decimals = _decimals;
         description = _description;

@@ -20,8 +20,8 @@ contract FxPriceFeedExample is OrallyPythiaConsumer, IFxPriceFeedExample {
     address public baseTokenAddr;
     uint256 public decimalPlaces;
 
-    constructor(address _pythiaRegistry, string memory _pair, address _baseTokenAddr, uint256 _decimalPlaces)
-        OrallyPythiaConsumer(_pythiaRegistry)
+    constructor(address _executorsRegistry, string memory _pair, address _baseTokenAddr, uint256 _decimalPlaces)
+        OrallyPythiaConsumer(_executorsRegistry)
     {
         pair = _pair;
         baseTokenAddr = _baseTokenAddr;

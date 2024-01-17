@@ -37,8 +37,8 @@ contract ChainlinkStyleOracleComplete is OrallyPythiaConsumer, ChainlinkStyleInt
         uint256 updatedAt;
     }
 
-    constructor(address _pythiaRegistry, uint8 _decimals, string memory _description, uint256 _version)
-        OrallyPythiaConsumer(_pythiaRegistry)
+    constructor(address _executorsRegistry, uint8 _decimals, string memory _description, uint256 _version)
+        OrallyPythiaConsumer(_executorsRegistry)
     {
         decimals = _decimals;
         description = _description;

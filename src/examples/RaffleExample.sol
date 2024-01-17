@@ -8,8 +8,8 @@ contract RaffleExample is OrallyPythiaConsumer {
     uint256 ticketPrice;
     address[] entries;
 
-    constructor(address _pythiaRegistry, uint256 _maxNumberOfTickets, uint256 _ticketPrice)
-        OrallyPythiaConsumer(_pythiaRegistry)
+    constructor(address _executorsRegistry, uint256 _maxNumberOfTickets, uint256 _ticketPrice)
+        OrallyPythiaConsumer(_executorsRegistry)
     {
         maxNumberOfTickets = _maxNumberOfTickets;
         ticketPrice = _ticketPrice;
