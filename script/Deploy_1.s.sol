@@ -20,7 +20,7 @@ contract Deploy_1 is Script {
         console2.log("OrallyVerifierOracle deployed at:", address(verifier));
 
         OrallyExecutorsRegistry registry = new OrallyExecutorsRegistry();
-        console2.log("OrallyPythiaExecutorsRegistry deployed at:", address(registry));
+        console2.log("OrallyExecutorsRegistry deployed at:", address(registry));
 
         Multicall multi = new Multicall(address(registry));
         console2.log("Multicall deployed at:", address(multi));
