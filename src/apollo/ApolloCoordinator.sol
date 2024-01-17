@@ -12,8 +12,8 @@ contract ApolloCoordinator is IApolloCoordinator {
     // Counter for generating unique request IDs
     uint256 public requestCounter;
 
-    // Array of requests
-    PriceFeedRequest[] public requests;
+    // All requests by ID
+    mapping(uint256 => PriceFeedRequest) public requests;
 
     /**
      * @notice Requests data from the Apollo network.
@@ -21,16 +21,28 @@ contract ApolloCoordinator is IApolloCoordinator {
      * @param callbackGasLimit The gas limit for the callback transaction.
      */
     function requestDataFeed(string memory dataFeedId, uint256 callbackGasLimit) public {
-        bytes32 id = _getRequestId();
-        requests.push(PriceFeedRequest(id, dataFeedId, callbackGasLimit, msg.sender));
-        emit PriceFeedRequested(_getRequestId(), dataFeedId, callbackGasLimit, msg.sender);
+        uint256 id = _getRequestId();
+        requests[id] = PriceFeedRequest(id, dataFeedId, callbackGasLimit, msg.sender);
+        emit PriceFeedRequested(id, dataFeedId, callbackGasLimit, msg.sender);
     }
 
-    function _getRequestId() internal returns (bytes32 requestId) {
-        // Generate a unique request ID
-        requestId = keccak256(abi.encodePacked(address(this), requestCounter));
+    function _getRequestId() internal returns (uint256 requestId) {
+        requestId = requestCounter;
         requestCounter++;
     }
 
-    // Additional functions and modifiers as needed for your Apollo system...
+    function getRequestsFromId(uint256 _start) public view returns (PriceFeedRequest[] memory requestRange) {
+        requestRange = getRequestsInRange(_start, requestCounter);
+    }
+
+    function getRequestsInRange(uint256 _start, uint256 _end)
+        public
+        view
+        returns (PriceFeedRequest[] memory requestRange)
+    {
+        requestRange = new PriceFeedRequest[](_end - _start);
+        for (uint256 i = _start; i < _end; i++) {
+            requestRange[i - _start] = requests[i];
+        }
+    }
 }
