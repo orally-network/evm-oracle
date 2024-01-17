@@ -7,7 +7,7 @@ import {console2} from "forge-std/console2.sol";
 import {ChainlinkStyleOracleSimple} from "src/examples/ChainlinkStyleOracleSimple.sol";
 
 contract Deploy_2 is Script {
-    address constant orallyPythiaExecutorsRegistryAddress = 0x426A36f24f02223b6876A42A9ea8478A9218BC30;
+    address constant orallyPythiaExecutorsRegistryAddress = 0x000000000000000000000000000000000000dEaD;
 
     function run() public {
         console2.log("Running deploy script for the Factory contract");

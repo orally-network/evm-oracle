@@ -9,7 +9,6 @@ import {OrallyExecutorsRegistry} from "src/OrallyExecutorsRegistry.sol";
 import {Multicall} from "src/Multicall.sol";
 
 contract Deploy_1 is Script {
-    address constant deadAddress = 0x000000000000000000000000000000000000dEaD;
     address constant pmaAddress = 0x05C3F2A3Ae0b7f3775044EEFED8a864c47125F19;
     address constant sybilAddress = 0x60825063CB0f4EF508854Ad4913f3a6de86B3807;
 
