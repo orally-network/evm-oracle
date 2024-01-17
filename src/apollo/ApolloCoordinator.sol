@@ -12,8 +12,8 @@ contract ApolloCoordinator is IApolloCoordinator {
     // Counter for generating unique request IDs
     uint256 public requestCounter;
 
-    // All requests by ID
-    mapping(bytes32 => PriceFeedRequest) public requests;
+    // Array of requests
+    PriceFeedRequest[] public requests;
 
     /**
      * @notice Requests data from the Apollo network.
@@ -22,7 +22,7 @@ contract ApolloCoordinator is IApolloCoordinator {
      */
     function requestDataFeed(string memory dataFeedId, uint256 callbackGasLimit) public {
         bytes32 id = _getRequestId();
-        requests[id] = PriceFeedRequest(id, dataFeedId, callbackGasLimit, msg.sender);
+        requests.push(PriceFeedRequest(id, dataFeedId, callbackGasLimit, msg.sender));
         emit PriceFeedRequested(_getRequestId(), dataFeedId, callbackGasLimit, msg.sender);
     }
 
