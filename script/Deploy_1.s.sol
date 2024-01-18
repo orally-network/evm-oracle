@@ -7,6 +7,7 @@ import {console2} from "forge-std/console2.sol";
 import {OrallyVerifierOracle} from "src/OrallyVerifierOracle.sol";
 import {OrallyExecutorsRegistry} from "src/OrallyExecutorsRegistry.sol";
 import {Multicall} from "src/Multicall.sol";
+import {ApolloCoordinator} from "src/apollo/ApolloCoordinator.sol";
 
 contract Deploy_1 is Script {
     address constant pmaAddress = 0x05C3F2A3Ae0b7f3775044EEFED8a864c47125F19;
@@ -25,6 +26,9 @@ contract Deploy_1 is Script {
 
         Multicall multi = new Multicall(address(registry));
         console2.log("Multicall deployed at:", address(multi));
+
+        ApolloCoordinator coordinator = new ApolloCoordinator();
+        console2.log("Coordinator deployed at:", address(coordinator));
 
         // Setup
         verifier.addReporter(sybilAddress);
