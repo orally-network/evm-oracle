@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import {OrallyPythiaConsumer} from "./consumers/OrallyPythiaConsumer.sol";
 
-contract Multicall is OrallyPythiaConsumer {
+contract OrallyMulticall is OrallyPythiaConsumer {
     constructor(address _executorsRegistry) OrallyPythiaConsumer(_executorsRegistry) {}
 
     struct Call {
