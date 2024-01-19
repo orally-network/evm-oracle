@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-contract WeatherAuction {
+import {OrallyPythiaConsumer} from "../consumers/OrallyPythiaConsumer.sol";
+
+contract WeatherAuction is OrallyPythiaConsumer {
     uint256 constant TICKET_PRICE = 0.001 ether;
     address public owner;
-    address public oracle;
     struct Bid {
         uint temperatureGuess;
         uint ticketCount;
@@ -21,19 +22,13 @@ contract WeatherAuction {
     event WinnerDeclared(address winner, uint day, uint temperature, uint winnerPrize);
     event Withdrawal(address indexed user, uint amount);
 
-    constructor(address _oracle) {
+    constructor(address _executorsRegistry) OrallyPythiaConsumer(_executorsRegistry) {
         owner = msg.sender;
-        oracle = _oracle;
         auctionOpen = true;
     }
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can call this function.");
-        _;
-    }
-
-    modifier onlyOracle() {
-        require(msg.sender == oracle, "Only oracle can call this function.");
         _;
     }
 
@@ -56,12 +51,12 @@ contract WeatherAuction {
     }
 
     // close auction before providing winning temperature to avoid reentrancy attack
-    function closeAuction() public onlyOracle {
+    function closeAuction() public onlyExecutor {
         require(totalTickets > 0, "No tickets sold for today.");
         auctionOpen = false;
     }
 
-    function updateTemperature(uint _temperature) public onlyOracle {
+    function updateTemperature(uint _temperature) public onlyExecutor {
         require(totalTickets > 0, "No tickets sold for today.");
         require(!auctionOpen, "Auction is still open.");
         currentTemperature = _temperature;
