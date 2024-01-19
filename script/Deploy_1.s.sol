@@ -8,6 +8,7 @@ import {OrallyVerifierOracle} from "src/OrallyVerifierOracle.sol";
 import {OrallyExecutorsRegistry} from "src/OrallyExecutorsRegistry.sol";
 import {Multicall} from "src/Multicall.sol";
 import {ApolloCoordinator} from "src/apollo/ApolloCoordinator.sol";
+import {OrallyPriceFeed} from "src/examples/OrallyPriceFeed.sol";
 
 contract Deploy_1 is Script {
     address constant pmaAddress = 0x05C3F2A3Ae0b7f3775044EEFED8a864c47125F19;
@@ -17,6 +18,8 @@ contract Deploy_1 is Script {
     function run() public {
         console2.log("Running deploy script for the Factory contract");
         vm.startBroadcast();
+
+        // deploy infrastructure
 
         OrallyVerifierOracle verifier = new OrallyVerifierOracle(msg.sender);
         console2.log("OrallyVerifierOracle deployed at:", address(verifier));
@@ -38,6 +41,28 @@ contract Deploy_1 is Script {
 
         registry.add(keccak256("APOLLO_EXECUTOR"), amaAddress);
         registry.add(keccak256("APOLLO_EXECUTOR"), address(multi));
+
+
+        // deploy oracles
+        OrallyPriceFeed btcOracle =
+                    new OrallyPriceFeed(address(registry), 8, "BTC/USD");
+        console2.log("BTC Oracle deployed at:", address(btcOracle));
+
+        OrallyPriceFeed ethOracle =
+                    new OrallyPriceFeed(address(registry), 18, "ETH/USD");
+        console2.log("ETH Oracle deployed at:", address(ethOracle));
+
+        OrallyPriceFeed usdtOracle =
+                    new OrallyPriceFeed(address(registry), 6, "USDT/USD");
+        console2.log("USDT Oracle deployed at:", address(usdtOracle));
+
+        OrallyPriceFeed usdcOracle =
+                    new OrallyPriceFeed(address(registry), 6, "USDC/USD");
+        console2.log("USDC Oracle deployed at:", address(usdcOracle));
+
+        OrallyPriceFeed bnbOracle =
+                    new OrallyPriceFeed(address(registry), 8, "BNB/USD");
+        console2.log("BNB Oracle deployed at:", address(bnbOracle));
 
         vm.stopBroadcast();
     }
