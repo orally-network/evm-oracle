@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import {OrallyPythiaConsumer} from "../consumers/OrallyPythiaConsumer.sol";
 
+// temperature treats with decimals=1 (e.g. 25.5 = 255)
 contract WeatherAuction is OrallyPythiaConsumer {
     uint256 constant TICKET_PRICE = 0.001 ether;
     address public owner;
@@ -69,7 +70,7 @@ contract WeatherAuction is OrallyPythiaConsumer {
         uint winningTemperature;
         uint totalWinningTickets = 0;
 
-        for(uint i = 0; i < 100; i++) {  // Assuming temperature range 0-99 for simplicity
+        for(uint i = 0; i < 500; i++) {  // Assuming temperature range 0-49.9C for simplicity
             if(guessIndex[i].length > 0) {
                 uint diff = absDifference(i, currentTemperature);
                 if (diff < closestDiff) {
@@ -126,7 +127,7 @@ contract WeatherAuction is OrallyPythiaConsumer {
     }
 
     function clearBids() internal {
-        for(uint i = 0; i < 100; i++) {  // Assuming temperature range 0-99 for simplicity
+        for(uint i = 0; i < 500; i++) {  // Assuming temperature range 0-49.9C for simplicity
             delete guessIndex[i];
         }
         totalTickets = 0;
