@@ -14,9 +14,10 @@ contract WeatherAuction is OrallyPythiaConsumer {
     mapping(uint => Bid[]) private guessIndex;
     mapping(address => uint) public userBalances;
     uint public currentTemperature;
-    bool public auctionOpen;
-    uint private totalTickets;
     uint public currentDay = 0;
+    bool public auctionOpen;
+    uint public totalTickets;
+    uint public feePercentage = 5;
 
     event BidPlaced(address indexed bidder, uint temperatureGuess, uint ticketCount);
     event WinnerDeclared(address winner, uint day, uint temperature, uint winnerPrize);
@@ -100,7 +101,9 @@ contract WeatherAuction is OrallyPythiaConsumer {
             Bid memory winnerBid = guessIndex[winningTemperature][i];
             address winner = winnerBid.bidderAddress;
             uint winnerPrize = prizePerTicket * winnerBid.ticketCount;
-            userBalances[winner] += winnerPrize;
+            uint fee = winnerPrize / 100 * feePercentage;
+            userBalances[owner] += fee;
+            userBalances[winner] += (winnerPrize - fee);
 
             emit WinnerDeclared(winner, currentDay, winningTemperature, winnerPrize);
         }
