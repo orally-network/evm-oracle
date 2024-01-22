@@ -6,7 +6,7 @@ import {console2} from "forge-std/console2.sol";
 
 import {WeatherAuction} from "src/examples/WeatherAuction.sol";
 
-contract Deploy_1 is Script {
+contract Deploy_WeatherAuction is Script {
     address constant pythiaExecutorRegistry = 0x000000000000000000000000000000000000dEaD;
 
     function run() public {
