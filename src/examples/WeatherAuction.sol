@@ -20,7 +20,7 @@ contract WeatherAuction is OrallyPythiaConsumer {
     uint public totalTickets;
     uint public feePercentage = 5;
 
-    event BidPlaced(address indexed bidder, uint temperatureGuess, uint ticketCount);
+    event BidPlaced(address indexed bidder, uint temperatureGuess, uint ticketCount, uint day);
     event WinnerDeclared(address winner, uint day, uint temperature, uint winnerPrize);
     event Withdrawal(address indexed user, uint amount);
 
@@ -49,7 +49,7 @@ contract WeatherAuction is OrallyPythiaConsumer {
         guessIndex[_temperatureGuess].push(newBid);
         totalTickets += ticketCount;
 
-        emit BidPlaced(msg.sender, _temperatureGuess, ticketCount);
+        emit BidPlaced(msg.sender, _temperatureGuess, ticketCount, currentDay);
     }
 
     // close auction before providing winning temperature to avoid reentrancy attack
