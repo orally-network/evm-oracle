@@ -19,6 +19,7 @@ contract WeatherAuction is OrallyPythiaConsumer {
     bool public auctionOpen;
     uint public totalTickets;
     uint public feePercentage = 5;
+    uint256 public lastUpdate;
 
     event BidPlaced(address indexed bidder, uint temperatureGuess, uint ticketCount, uint day);
     event WinnerDeclared(address winner, uint day, uint temperature, uint winnerPrize);
@@ -58,10 +59,11 @@ contract WeatherAuction is OrallyPythiaConsumer {
         auctionOpen = false;
     }
 
-    function updateTemperature(uint _temperature) public onlyExecutor {
+    function updateTemperature(string memory, uint256 _temperature, uint256 _decimals, uint256 _timestamp) public onlyExecutor {
         require(totalTickets > 0, "No tickets sold for today.");
         require(!auctionOpen, "Auction is still open.");
         currentTemperature = _temperature;
+        lastUpdate = _timestamp;
         selectWinner();
     }
 
