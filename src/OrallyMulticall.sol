@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
 
-import {OrallyPythiaConsumer} from "./consumers/OrallyPythiaConsumer.sol";
+import {OrallyConsumer} from "./consumers/OrallyConsumer.sol";
 
-contract OrallyMulticall is OrallyPythiaConsumer {
-    constructor(address _executorsRegistry) OrallyPythiaConsumer(_executorsRegistry) {}
+contract OrallyMulticall is OrallyConsumer {
+    constructor(address _executorsRegistry) OrallyConsumer(_executorsRegistry) {}
 
     struct Call {
         address target;
