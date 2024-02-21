@@ -1,20 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {OrallyPythiaConsumer} from "../consumers/OrallyPythiaConsumer.sol";
+import {OrallyConsumer} from "../consumers/OrallyConsumer.sol";
 
-// temperature treats with decimals=1 (e.g. 25.5 = 255)
-contract WeatherPredictionV2 is OrallyPythiaConsumer {
+contract PredictionGeneric is OrallyConsumer {
     uint256 public ticketPrice = 0.001 ether;
     address public owner;
 
     struct MultiBid {
-        uint temperatureGuess;
+        uint numericGuess;
         uint ticketCount;
     }
 
     struct Bid {
-        uint temperatureGuess;
+        uint numericGuess;
         uint ticketCount;
         address bidderAddress;
     }
@@ -23,21 +22,21 @@ contract WeatherPredictionV2 is OrallyPythiaConsumer {
     uint[] private activeGuesses; // Tracks the active guesses to iterate over
 
     mapping(address => uint) public userBalances;
-    uint public currentTemperature;
+    uint public currentNumeric;
     uint public currentDay = 0;
     bool public auctionOpen;
     uint public totalTickets;
     uint public feePercentage = 5;
     uint256 public lastUpdate;
 
-    event BidPlaced(address indexed bidder, uint temperatureGuess, uint ticketCount, uint day);
-    event WinnerDeclared(address winner, uint day, uint temperature, uint winnerPrize);
+    event BidPlaced(address indexed bidder, uint numericGuess, uint ticketCount, uint day);
+    event WinnerDeclared(address winner, uint day, uint numericGuess, uint winnerPrize);
     event Withdrawal(address indexed user, uint amount);
     event RoundClosed(uint day, uint totalTickets);
     event TicketPriceChanged(uint256 newTicketPrice);
     event FeePercentageChanged(uint newFeePercentage);
 
-    constructor(address _executorsRegistry) OrallyPythiaConsumer(_executorsRegistry) {
+    constructor(address _executorsRegistry) OrallyConsumer(_executorsRegistry) {
         owner = msg.sender;
         auctionOpen = true;
     }
@@ -47,26 +46,26 @@ contract WeatherPredictionV2 is OrallyPythiaConsumer {
         _;
     }
 
-    function bid(uint _temperatureGuess) public payable {
+    function bid(uint _numericGuess) public payable {
         require(auctionOpen, "Auction is not open.");
         uint ticketCount = msg.value / ticketPrice;
         require(ticketCount > 0, "Insufficient amount for any tickets.");
         require(msg.value == ticketCount * ticketPrice, "Send a correct amount of ETH.");
 
-        if (guessIndex[_temperatureGuess].length == 0) {
-            activeGuesses.push(_temperatureGuess); // Track new active guess
+        if (guessIndex[_numericGuess].length == 0) {
+            activeGuesses.push(_numericGuess); // Track new active guess
         }
 
         Bid memory newBid = Bid({
-            temperatureGuess: _temperatureGuess,
+            numericGuess: _numericGuess,
             ticketCount: ticketCount,
             bidderAddress: msg.sender
         });
 
-        guessIndex[_temperatureGuess].push(newBid);
+        guessIndex[_numericGuess].push(newBid);
         totalTickets += ticketCount;
 
-        emit BidPlaced(msg.sender, _temperatureGuess, ticketCount, currentDay);
+        emit BidPlaced(msg.sender, _numericGuess, ticketCount, currentDay);
     }
 
     function multiBid(MultiBid[] memory bids) public payable {
@@ -80,53 +79,53 @@ contract WeatherPredictionV2 is OrallyPythiaConsumer {
         require(msg.value == totalEthRequired, "Incorrect ETH amount for bids.");
 
         for (uint i = 0; i < bids.length; i++) {
-            uint _temperatureGuess = bids[i].temperatureGuess;
+            uint _numericGuess = bids[i].numericGuess;
             uint ticketCount = bids[i].ticketCount;
 
-            if (guessIndex[_temperatureGuess].length == 0) {
-                activeGuesses.push(_temperatureGuess); // Track new active guess
+            if (guessIndex[_numericGuess].length == 0) {
+                activeGuesses.push(_numericGuess); // Track new active guess
             }
 
             Bid memory newBid = Bid({
-                temperatureGuess: _temperatureGuess,
+                numericGuess: _numericGuess,
                 ticketCount: ticketCount,
                 bidderAddress: msg.sender
             });
 
-            guessIndex[_temperatureGuess].push(newBid);
+            guessIndex[_numericGuess].push(newBid);
             totalTickets += ticketCount;
 
-            emit BidPlaced(msg.sender, _temperatureGuess, ticketCount, currentDay);
+            emit BidPlaced(msg.sender, _numericGuess, ticketCount, currentDay);
         }
     }
 
-    // close auction before providing winning temperature to avoid reentrancy attack
+    // close auction before providing winning numeric to avoid reentrancy attack
     function closeAuction() public onlyExecutor {
         auctionOpen = false;
 
         emit RoundClosed(currentDay, totalTickets);
     }
 
-    function updateTemperature(string memory, uint256 _temperature, uint256 _decimals, uint256 _timestamp) public onlyExecutor {
+    function updateNumeric(string memory, uint256 _numeric, uint256 _decimals, uint256 _timestamp) public onlyExecutor {
         require(!auctionOpen, "Auction is still open.");
-        currentTemperature = _temperature;
+        currentNumeric = _numeric;
         lastUpdate = _timestamp;
         selectWinner();
     }
 
     function selectWinner() internal {
         uint closestDiff = type(uint).max;
-        uint winningTemperature;
+        uint winningNumeric;
         uint totalWinningTickets = 0;
 
         for(uint i = 0; i < activeGuesses.length; i++) {
             uint guess = activeGuesses[i];
 
             if(guessIndex[guess].length > 0) {
-                uint diff = absDifference(guess, currentTemperature);
+                uint diff = absDifference(guess, currentNumeric);
                 if (diff < closestDiff) {
                     closestDiff = diff;
-                    winningTemperature = guess;
+                    winningNumeric = guess;
 
                     totalWinningTickets = sumTicketCounts(guessIndex[guess]);
                 }
@@ -134,7 +133,7 @@ contract WeatherPredictionV2 is OrallyPythiaConsumer {
         }
 
         if(totalWinningTickets > 0) {
-            distributePrize(winningTemperature, totalWinningTickets);
+            distributePrize(winningNumeric, totalWinningTickets);
         }
 
         clearBids();
@@ -155,17 +154,17 @@ contract WeatherPredictionV2 is OrallyPythiaConsumer {
         else return b - a;
     }
 
-    function distributePrize(uint winningTemperature, uint totalWinningTickets) internal {
+    function distributePrize(uint winningNumeric, uint totalWinningTickets) internal {
         uint prizePerTicket = totalTickets * ticketPrice / totalWinningTickets;
-        for (uint i = 0; i < guessIndex[winningTemperature].length; i++) {
-            Bid memory winnerBid = guessIndex[winningTemperature][i];
+        for (uint i = 0; i < guessIndex[winningNumeric].length; i++) {
+            Bid memory winnerBid = guessIndex[winningNumeric][i];
             address winner = winnerBid.bidderAddress;
             uint winnerPrize = prizePerTicket * winnerBid.ticketCount;
             uint fee = winnerPrize / 100 * feePercentage;
             userBalances[owner] += fee;
             userBalances[winner] += (winnerPrize - fee);
 
-            emit WinnerDeclared(winner, currentDay, winningTemperature, winnerPrize);
+            emit WinnerDeclared(winner, currentDay, winningNumeric, winnerPrize);
         }
     }
 
