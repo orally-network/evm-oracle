@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
 
 import {OrallyConsumer} from "../consumers/OrallyConsumer.sol";
@@ -106,7 +106,7 @@ contract PredictionGeneric is OrallyConsumer {
         emit RoundClosed(currentDay, totalTickets);
     }
 
-    function updateNumeric(string memory, uint256 _numeric, uint256 _decimals, uint256 _timestamp) public onlyExecutor {
+    function updateNumeric(string memory, uint256 _numeric, uint256, uint256 _timestamp) public onlyExecutor {
         require(!auctionOpen, "Auction is still open.");
         currentNumeric = _numeric;
         lastUpdate = _timestamp;
@@ -139,14 +139,12 @@ contract PredictionGeneric is OrallyConsumer {
         clearBids();
     }
 
-    function sumTicketCounts(Bid[] storage bids) internal view returns (uint totalTickets) {
-        uint totalTickets = 0;
-
+    function sumTicketCounts(Bid[] storage bids) internal view returns (uint tickets) {
         for (uint i = 0; i < bids.length; i++) {
-            totalTickets += bids[i].ticketCount;
+            tickets += bids[i].ticketCount;
         }
 
-        return totalTickets;
+        return tickets;
     }
 
     function absDifference(uint a, uint b) internal pure returns(uint) {
