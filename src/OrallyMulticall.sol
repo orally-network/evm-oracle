@@ -23,6 +23,8 @@ contract OrallyMulticall is OrallyConsumer {
         bytes returnData;
     }
 
+    event MulticallExecuted(Result[] resultExecutionData);
+
     function multicall(Call[] calldata calls) public onlyExecutor returns (Result[] memory) {
         uint256 length = calls.length;
         Result[] memory returnData = new Result[](length);
@@ -38,6 +40,8 @@ contract OrallyMulticall is OrallyConsumer {
             result.usedGas = gasBefore - gasleft();
             returnData[i] = result;
         }
+
+        emit MulticallExecuted(returnData);
 
         return returnData;
     }
