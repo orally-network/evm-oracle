@@ -4,7 +4,7 @@ pragma solidity ^0.8.13;
 import "forge-std/Script.sol";
 import {console2} from "forge-std/console2.sol";
 
-import {WeatherAuction} from "src/examples/WeatherAuction.sol";
+import {WeatherAuction} from "src/prediction/WeatherAuction.sol";
 
 contract Deploy_WeatherAuction is Script {
     address constant pythiaExecutorRegistry = 0x000000000000000000000000000000000000dEaD;
