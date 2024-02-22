@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import {OrallyConsumer} from "../consumers/OrallyConsumer.sol";
 
 contract PredictionGeneric is OrallyConsumer {
-    uint256 public ticketPrice = 0.001 ether;
+    uint256 public ticketPrice = 0.0015 ether;
     address public owner;
 
     struct MultiBid {
@@ -18,15 +18,15 @@ contract PredictionGeneric is OrallyConsumer {
         address bidderAddress;
     }
 
-    mapping(uint => Bid[]) private guessIndex;
-    uint[] private activeGuesses; // Tracks the active guesses to iterate over
+    mapping(uint => Bid[]) public guessIndex;
+    uint[] public activeGuesses; // Tracks the active guesses to iterate over
 
     mapping(address => uint) public userBalances;
     uint public currentNumeric;
     uint public currentDay = 0;
     bool public auctionOpen;
     uint public totalTickets;
-    uint public feePercentage = 5;
+    uint public feePercentage = 10;
     uint256 public lastUpdate;
 
     event BidPlaced(address indexed bidder, uint numericGuess, uint ticketCount, uint day);
@@ -46,7 +46,7 @@ contract PredictionGeneric is OrallyConsumer {
         _;
     }
 
-    function bid(uint _numericGuess) public payable {
+    function bid(uint _numericGuess) virtual public payable {
         require(auctionOpen, "Auction is not open.");
         uint ticketCount = msg.value / ticketPrice;
         require(ticketCount > 0, "Insufficient amount for any tickets.");
@@ -68,7 +68,7 @@ contract PredictionGeneric is OrallyConsumer {
         emit BidPlaced(msg.sender, _numericGuess, ticketCount, currentDay);
     }
 
-    function multiBid(MultiBid[] memory bids) public payable {
+    function multiBid(MultiBid[] memory bids) virtual public payable {
         require(auctionOpen, "Auction is not open.");
         uint totalEthRequired = 0;
 
