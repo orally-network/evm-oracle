@@ -54,17 +54,17 @@ contract Deploy_1 is Script {
                     new OrallyPriceFeed(address(registry), 18, "ETH/USD");
         console2.log("ETH Oracle deployed at:", address(ethOracle));
 
-        OrallyPriceFeed usdtOracle =
-                    new OrallyPriceFeed(address(registry), 6, "USDT/USD");
-        console2.log("USDT Oracle deployed at:", address(usdtOracle));
-
-        OrallyPriceFeed usdcOracle =
-                    new OrallyPriceFeed(address(registry), 6, "USDC/USD");
-        console2.log("USDC Oracle deployed at:", address(usdcOracle));
-
-        OrallyPriceFeed bnbOracle =
-                    new OrallyPriceFeed(address(registry), 8, "BNB/USD");
-        console2.log("BNB Oracle deployed at:", address(bnbOracle));
+//        OrallyPriceFeed usdtOracle =
+//                    new OrallyPriceFeed(address(registry), 6, "USDT/USD");
+//        console2.log("USDT Oracle deployed at:", address(usdtOracle));
+//
+//        OrallyPriceFeed usdcOracle =
+//                    new OrallyPriceFeed(address(registry), 6, "USDC/USD");
+//        console2.log("USDC Oracle deployed at:", address(usdcOracle));
+//
+//        OrallyPriceFeed bnbOracle =
+//                    new OrallyPriceFeed(address(registry), 8, "BNB/USD");
+//        console2.log("BNB Oracle deployed at:", address(bnbOracle));
 
         vm.stopBroadcast();
     }

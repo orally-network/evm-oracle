@@ -17,25 +17,47 @@ contract Deploy_V1_V2_upgrade is Script {
     // different between chains
     address constant amaAddress = 0x000000000000000000000000000000000000dEaD;
 
-    address constant registryAddress = 0x000000000000000000000000000000000000dEaD;
-
     function run() public {
         console2.log("Running deploy script for the Factory contract");
         vm.startBroadcast();
 
-        // redeploy new multicall with new ApolloCoordinator
+        // redeploy executorsRegistry new multicall, new ApolloCoordinator
+        OrallyExecutorsRegistry registry = new OrallyExecutorsRegistry();
+        console2.log("OrallyExecutorsRegistry deployed at:", address(registry));
 
-        OrallyMulticall multi = new OrallyMulticall(registryAddress);
+        OrallyMulticall multi = new OrallyMulticall(address(registry));
         console2.log("Multicall deployed at:", address(multi));
 
         ApolloCoordinatorV2 coordinator = new ApolloCoordinatorV2();
         console2.log("Coordinator deployed at:", address(coordinator));
 
-        OrallyExecutorsRegistry registry = OrallyExecutorsRegistry(registryAddress);
+        registry.initialize();
+        registry.add(keccak256("PYTHIA_EXECUTOR"), pmaAddress);
+        registry.add(keccak256("PYTHIA_EXECUTOR"), address(multi));
 
-        // set concrete apollo address on chain and new multicall
         registry.add(keccak256("APOLLO_EXECUTOR"), amaAddress);
         registry.add(keccak256("APOLLO_EXECUTOR"), address(multi));
+
+        // re-deploy oracles
+        OrallyPriceFeed btcOracle =
+                    new OrallyPriceFeed(address(registry), 8, "BTC/USD");
+        console2.log("BTC Oracle deployed at:", address(btcOracle));
+
+        OrallyPriceFeed ethOracle =
+                    new OrallyPriceFeed(address(registry), 18, "ETH/USD");
+        console2.log("ETH Oracle deployed at:", address(ethOracle));
+
+        OrallyPriceFeed usdtOracle =
+                    new OrallyPriceFeed(address(registry), 6, "USDT/USD");
+        console2.log("USDT Oracle deployed at:", address(usdtOracle));
+
+        OrallyPriceFeed usdcOracle =
+                    new OrallyPriceFeed(address(registry), 6, "USDC/USD");
+        console2.log("USDC Oracle deployed at:", address(usdcOracle));
+
+        OrallyPriceFeed bnbOracle =
+                    new OrallyPriceFeed(address(registry), 8, "BNB/USD");
+        console2.log("BNB Oracle deployed at:", address(bnbOracle));
 
         vm.stopBroadcast();
     }
