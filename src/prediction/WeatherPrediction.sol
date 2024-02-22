@@ -6,7 +6,7 @@ import {PredictionGeneric} from "./PredictionGeneric.sol";
 // temperature treats with decimals=1 (e.g. 25.5 = 255)
 contract WeatherPrediction is PredictionGeneric {
 
-    constructor(address _executorsRegistry) PredictionGeneric(_executorsRegistry) {
+    constructor(address _executorsRegistry, string _description) PredictionGeneric(_executorsRegistry, _description) {
     }
 
     // for adapting data if needed

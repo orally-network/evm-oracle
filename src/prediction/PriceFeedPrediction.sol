@@ -3,10 +3,11 @@ pragma solidity ^0.8.20;
 
 import {PredictionGeneric} from "./PredictionGeneric.sol";
 
+// for btc and eth
 // btc rate treats with decimals=0 (e.g. 52000.25 = 52000)
-contract BitcoinPrediction is PredictionGeneric {
+contract PriceFeedPrediction is PredictionGeneric {
 
-    constructor(address _executorsRegistry) PredictionGeneric(_executorsRegistry) {
+    constructor(address _executorsRegistry, string _description) PredictionGeneric(_executorsRegistry, _description) {
     }
 
     // for adapting data if needed

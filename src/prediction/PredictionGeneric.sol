@@ -28,6 +28,8 @@ contract PredictionGeneric is OrallyConsumer {
     uint public totalTickets;
     uint public feePercentage = 10;
     uint256 public lastUpdate;
+    string public dataFeedId;
+    string public description;
 
     event BidPlaced(address indexed bidder, uint numericGuess, uint ticketCount, uint day);
     event WinnerDeclared(address winner, uint day, uint numericGuess, uint winnerPrize);
@@ -35,9 +37,11 @@ contract PredictionGeneric is OrallyConsumer {
     event RoundClosed(uint day, uint totalTickets);
     event TicketPriceChanged(uint256 newTicketPrice);
     event FeePercentageChanged(uint newFeePercentage);
+    event DescriptionChanged(string newDescription);
 
-    constructor(address _executorsRegistry) OrallyConsumer(_executorsRegistry) {
+    constructor(address _executorsRegistry, string _description) OrallyConsumer(_executorsRegistry) {
         owner = msg.sender;
+        description = _description;
         auctionOpen = true;
     }
 
@@ -106,10 +110,11 @@ contract PredictionGeneric is OrallyConsumer {
         emit RoundClosed(currentDay, totalTickets);
     }
 
-    function updateNumeric(string memory, uint256 _numeric, uint256, uint256 _timestamp) public onlyExecutor {
+    function updateNumeric(string _dataFeedId, uint256 _numeric, uint256, uint256 _timestamp) public onlyExecutor {
         require(!auctionOpen, "Auction is still open.");
         currentNumeric = _numeric;
         lastUpdate = _timestamp;
+        dataFeedId = _dataFeedId;
         selectWinner();
     }
 
@@ -185,6 +190,11 @@ contract PredictionGeneric is OrallyConsumer {
     function setTicketPrice(uint256 _ticketPrice) public onlyOwner {
         ticketPrice = _ticketPrice;
         emit TicketPriceChanged(_ticketPrice);
+    }
+
+    function setDescription(uint256 _description) public onlyOwner {
+        description = _description;
+        emit DescriptionChanged(_description);
     }
 
     function setFeePercentage(uint _feePercentage) public onlyOwner {
