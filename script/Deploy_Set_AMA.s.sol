@@ -11,9 +11,9 @@ import {ApolloCoordinatorV2} from "src/apollo/ApolloCoordinatorV2.sol";
 import {OrallyPriceFeed} from "src/examples/OrallyPriceFeed.sol";
 
 contract Deploy_Set_AMA is Script {
-    address constant executorsRegistry = 0x000000000000000000000000000000000000dEaD;
+    address constant executorsRegistry;
     // different between chains, could be added in different deployment script () on already deployed infrastructure
-    address constant amaAddress = 0x000000000000000000000000000000000000dEaD;
+    address constant amaAddress;
 
     function run() public {
         console2.log("Running deploy script for the Factory contract");

@@ -15,7 +15,7 @@ contract Deploy_1 is Script {
     address constant sybilAddress = 0x60825063CB0f4EF508854Ad4913f3a6de86B3807;
 
     // different between chains, could be added in different deployment script () on already deployed infrastructure
-    address constant amaAddress = 0x000000000000000000000000000000000000dEaD;
+    address constant amaAddress;
 
     function run() public {
         console2.log("Running deploy script for the Factory contract");

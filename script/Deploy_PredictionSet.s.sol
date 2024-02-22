@@ -9,7 +9,7 @@ import {PriceFeedPrediction} from "src/prediction/PriceFeedPrediction.sol";
 import {RandomPrediction} from "src/prediction/RandomPrediction.sol";
 
 contract Deploy_PredictionSet is Script {
-    address constant executorsRegistry = 0x000000000000000000000000000000000000dEaD;
+    address constant executorsRegistry;
 
     function run() public {
         console2.log("Running deploy script for the Factory contract");
