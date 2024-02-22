@@ -7,11 +7,11 @@ import {PredictionGeneric} from "./PredictionGeneric.sol";
 // btc rate treats with decimals=0 (e.g. 52000.25 = 52000)
 contract PriceFeedPrediction is PredictionGeneric {
 
-    constructor(address _executorsRegistry, string _description) PredictionGeneric(_executorsRegistry, _description) {
+    constructor(address _executorsRegistry, string memory _description) PredictionGeneric(_executorsRegistry, _description) {
     }
 
     // for adapting data if needed
-    function updatePriceFeed(string _feedId, uint256 _btcRate, uint256 _decimals, uint256 _timestamp) public onlyExecutor {
+    function updatePriceFeed(string memory _feedId, uint256 _btcRate, uint256 _decimals, uint256 _timestamp) public onlyExecutor {
         updateNumeric(_feedId, _btcRate / 10**_decimals, _decimals, _timestamp);
     }
 }

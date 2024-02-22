@@ -31,6 +31,8 @@ contract Deploy_V1_V2_upgrade is Script {
         ApolloCoordinatorV2 coordinator = new ApolloCoordinatorV2();
         console2.log("Coordinator deployed at:", address(coordinator));
 
+        OrallyExecutorsRegistry registry = OrallyExecutorsRegistry(registryAddress);
+
         // set concrete apollo address on chain and new multicall
         registry.add(keccak256("APOLLO_EXECUTOR"), amaAddress);
         registry.add(keccak256("APOLLO_EXECUTOR"), address(multi));

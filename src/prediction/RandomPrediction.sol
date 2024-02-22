@@ -6,7 +6,7 @@ import {PredictionGeneric} from "./PredictionGeneric.sol";
 // random number is getting in a range of totalTickets
 contract RandomPrediction is PredictionGeneric {
 
-    constructor(address _executorsRegistry, string _description) PredictionGeneric(_executorsRegistry, _description) {
+    constructor(address _executorsRegistry, string memory _description) PredictionGeneric(_executorsRegistry, _description) {
     }
 
     function bid(uint) override public payable {

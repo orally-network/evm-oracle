@@ -1,14 +1,14 @@
 import {OrallyApolloConsumer} from "../consumers/OrallyApolloConsumer.sol";
-import {IApolloCoordinator} from "../interfaces/IApolloCoordinator.sol";
+import {IApolloCoordinatorV2} from "../interfaces/IApolloCoordinatorV2.sol";
 
 contract ApolloConsumerExample is OrallyApolloConsumer {
     uint256 public rate;
     uint256 public decimals;
     uint256 public timestamp;
-    IApolloCoordinator public apollo;
+    IApolloCoordinatorV2 public apollo;
 
     constructor(address _executorsRegistry, address _apolloCoordinator) OrallyApolloConsumer(_executorsRegistry) {
-        apollo = IApolloCoordinator(_apolloCoordinator);
+        apollo = IApolloCoordinatorV2(_apolloCoordinator);
     }
 
     function requestValue() public {
