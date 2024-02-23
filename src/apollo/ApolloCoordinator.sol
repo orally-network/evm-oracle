@@ -20,10 +20,11 @@ contract ApolloCoordinator is IApolloCoordinator {
      * @param dataFeedId The identifier of the data feed being requested.
      * @param callbackGasLimit The gas limit for the callback transaction.
      */
-    function requestDataFeed(string memory dataFeedId, uint256 callbackGasLimit) public {
-        uint256 id = _getRequestId();
-        requests[id] = PriceFeedRequest(id, dataFeedId, callbackGasLimit, msg.sender);
-        emit PriceFeedRequested(id, dataFeedId, callbackGasLimit, msg.sender);
+    function requestDataFeed(
+        string calldata dataFeedId,
+        uint256 callbackGasLimit
+    ) external {
+        emit PriceFeedRequested(dataFeedId, callbackGasLimit, msg.sender);
     }
 
     function _getRequestId() internal returns (uint256 requestId) {
@@ -31,15 +32,16 @@ contract ApolloCoordinator is IApolloCoordinator {
         requestCounter++;
     }
 
-    function getRequestsFromId(uint256 _start) public view returns (PriceFeedRequest[] memory requestRange) {
+    function getRequestsFromId(
+        uint256 _start
+    ) public view returns (PriceFeedRequest[] memory requestRange) {
         requestRange = getRequestsInRange(_start, requestCounter);
     }
 
-    function getRequestsInRange(uint256 _start, uint256 _end)
-        public
-        view
-        returns (PriceFeedRequest[] memory requestRange)
-    {
+    function getRequestsInRange(
+        uint256 _start,
+        uint256 _end
+    ) public view returns (PriceFeedRequest[] memory requestRange) {
         requestRange = new PriceFeedRequest[](_end - _start);
         for (uint256 i = _start; i < _end; i++) {
             requestRange[i - _start] = requests[i];

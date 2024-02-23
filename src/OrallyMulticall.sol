@@ -4,7 +4,9 @@ pragma solidity ^0.8.20;
 import {OrallyConsumer} from "./consumers/OrallyConsumer.sol";
 
 contract OrallyMulticall is OrallyConsumer {
-    constructor(address _executorsRegistry) OrallyConsumer(_executorsRegistry) {}
+    constructor(
+        address _executorsRegistry
+    ) OrallyConsumer(_executorsRegistry) {}
 
     struct Call {
         address target;
@@ -25,7 +27,9 @@ contract OrallyMulticall is OrallyConsumer {
 
     event MulticallExecuted(Result[] resultExecutionData);
 
-    function multicall(Call[] calldata calls) public onlyExecutor returns (Result[] memory) {
+    function multicall(
+        Call[] calldata calls
+    ) public onlyExecutor returns (Result[] memory) {
         uint256 length = calls.length;
         Result[] memory returnData = new Result[](length);
         uint256 gasBefore;
@@ -36,7 +40,9 @@ contract OrallyMulticall is OrallyConsumer {
             }
 
             Result memory result = returnData[i];
-            (result.success, result.returnData) = calls[i].target.call(calls[i].callData);
+            (result.success, result.returnData) = calls[i].target.call(
+                calls[i].callData
+            );
             result.usedGas = gasBefore - gasleft();
             returnData[i] = result;
         }
@@ -46,7 +52,7 @@ contract OrallyMulticall is OrallyConsumer {
         return returnData;
     }
 
-    function multitransfer(Transfer[] calldata transfers) public payable onlyExecutor {
+    function multitransfer(Transfer[] calldata transfers) public payable {
         for (uint256 i = 0; i < transfers.length; i++) {
             payable(transfers[i].target).transfer(transfers[i].value);
         }
