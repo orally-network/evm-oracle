@@ -29,7 +29,7 @@ contract OrallyMulticall is OrallyConsumer {
 
     function multicall(
         Call[] calldata calls
-    ) public onlyExecutor returns (Result[] memory) {
+    ) external onlyExecutor returns (Result[] memory) {
         uint256 length = calls.length;
         Result[] memory returnData = new Result[](length);
         uint256 gasBefore;
@@ -52,7 +52,7 @@ contract OrallyMulticall is OrallyConsumer {
         return returnData;
     }
 
-    function multitransfer(Transfer[] calldata transfers) public payable {
+    function multitransfer(Transfer[] calldata transfers) external payable onlyExecutor {
         for (uint256 i = 0; i < transfers.length; i++) {
             payable(transfers[i].target).transfer(transfers[i].value);
         }
