@@ -3,6 +3,14 @@ pragma solidity ^0.8.20;
 
 import {OrallyConsumer} from "../consumers/OrallyConsumer.sol";
 
+// A partial WETH interfaec.
+interface IWETH is IERC20 {
+    function deposit() external payable;
+}
+
+// The WETH contract.
+//IWETH public immutable WETH;
+
 contract PredictionGeneric is OrallyConsumer {
     uint256 public ticketPrice = 0.0015 ether;
     address public owner;
