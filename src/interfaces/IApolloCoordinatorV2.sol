@@ -11,6 +11,6 @@ interface IApolloCoordinatorV2 {
     function requestDataFeed(string memory dataFeedId, uint256 callbackGasLimit) external;
 
     event PriceFeedRequested(
-        string indexed dataFeedId, uint256 callbackGasLimit, address indexed requester
+        string dataFeedId, uint256 callbackGasLimit, address indexed requester
     );
 }
