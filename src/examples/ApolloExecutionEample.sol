@@ -1,3 +1,5 @@
+pragma solidity ^0.8.20;
+
 import {OrallyApolloConsumer} from "../consumers/OrallyApolloConsumer.sol";
 import {IApolloCoordinatorV2} from "../interfaces/IApolloCoordinatorV2.sol";
 
@@ -15,7 +17,12 @@ contract ApolloConsumerExample is OrallyApolloConsumer {
         apollo.requestDataFeed("ICP/USD", 300000);
     }
 
-    function fulfillDataFeed(string memory, uint256 _rate, uint256 _decimals, uint256 _timestamp) external onlyExecutor {
+    function fulfillDataFeed(
+        string memory,
+        uint256 _rate,
+        uint256 _decimals,
+        uint256 _timestamp
+    ) external onlyExecutor {
         rate = _rate;
         decimals = _decimals;
         timestamp = _timestamp;

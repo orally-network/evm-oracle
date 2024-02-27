@@ -13,7 +13,10 @@ contract ApolloCoordinatorV2 is IApolloCoordinatorV2 {
      * @param dataFeedId The identifier of the data feed being requested.
      * @param callbackGasLimit The gas limit for the callback transaction.
      */
-    function requestDataFeed(string memory dataFeedId, uint256 callbackGasLimit) public {
+    function requestDataFeed(
+        string calldata dataFeedId,
+        uint256 callbackGasLimit
+    ) external {
         emit PriceFeedRequested(dataFeedId, callbackGasLimit, msg.sender);
     }
 }
