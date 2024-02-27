@@ -10,7 +10,6 @@ import {OrallyMulticall} from "src/OrallyMulticall.sol";
 import {ApolloCoordinatorV2} from "src/apollo/ApolloCoordinatorV2.sol";
 import {OrallyPriceFeed} from "src/examples/OrallyPriceFeed.sol";
 
-import {ApolloCoordinatorV2} from "src/apollo/ApolloCoordinatorV2.sol";
 
 contract Deploy_1 is Script {
     address constant pmaAddress = 0x05C3F2A3Ae0b7f3775044EEFED8a864c47125F19;
