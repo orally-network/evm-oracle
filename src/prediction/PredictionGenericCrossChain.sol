@@ -6,9 +6,14 @@ import {OrallyConsumer} from "../consumers/OrallyConsumer.sol";
 import "wormhole-solidity-sdk/interfaces/IWormholeRelayer.sol";
 import "wormhole-solidity-sdk/interfaces/IWormholeReceiver.sol";
 
+uint32 constant GAS_LIMIT = 500000;
+
 contract PredictionGeneric is OrallyConsumer, IWormholeReceiver {
     uint256 public ticketPrice = 0.0015 ether;
     address public owner;
+    address public targetAddress;
+    // wormhole arbitrum chainId
+    uint16 public chainId = 23;
 
     IWormholeRelayer public immutable wormholeRelayer;
 
@@ -44,16 +49,18 @@ contract PredictionGeneric is OrallyConsumer, IWormholeReceiver {
     event TicketPriceChanged(uint256 newTicketPrice);
     event FeePercentageChanged(uint newFeePercentage);
     event DescriptionChanged(string newDescription);
-    event CrossChainMessageReceived(uint16 sourceChain);
+    event CrossChainMessageReceived(uint16 sourceChain, uint32 winningNumeric, address winner, uint256 reward);
 
     constructor(
         address _executorsRegistry,
         string memory _description,
-        address _wormholeRelayer
+        address _wormholeRelayer,
+        uint16 _chainId
     ) OrallyConsumer(_executorsRegistry) {
         owner = msg.sender;
         description = _description;
         wormholeRelayer = IWormholeRelayer(_wormholeRelayer);
+        chainId = _chainId;
         auctionOpen = true;
     }
 
@@ -62,15 +69,19 @@ contract PredictionGeneric is OrallyConsumer, IWormholeReceiver {
         _;
     }
 
-    function bid(uint _numericGuess) virtual public payable {
-        bid(_numericGuess, block.chainId);
+    function setTargetAddress(address _targetAddress) public onlyOwner {
+        targetAddress = _targetAddress;
     }
 
-    function bid(uint _numericGuess, uint16 _chaiId) virtual public payable {
+    function bid(uint _numericGuess) virtual public payable {
+        bid(_numericGuess, chainId, msg.value, msg.sender);
+    }
+
+    function bid(uint _numericGuess, uint16 _chaiId, uint256 value, address sender) virtual public payable {
         require(auctionOpen, "Auction is not open.");
-        uint ticketCount = msg.value / ticketPrice;
+        uint ticketCount = value / ticketPrice;
         require(ticketCount > 0, "Insufficient amount for any tickets.");
-        require(msg.value == ticketCount * ticketPrice, "Send a correct amount of ETH.");
+        require(value == ticketCount * ticketPrice, "Send a correct amount of ETH.");
 
         if (guessIndex[_numericGuess].length == 0) {
             activeGuesses.push(_numericGuess); // Track new active guess
@@ -79,14 +90,14 @@ contract PredictionGeneric is OrallyConsumer, IWormholeReceiver {
         Bid memory newBid = Bid({
             numericGuess: _numericGuess,
             ticketCount: ticketCount,
-            bidderAddress: msg.sender,
+            bidderAddress: sender,
             chainId: _chaiId
         });
 
         guessIndex[_numericGuess].push(newBid);
         totalTickets += ticketCount;
 
-        emit BidPlaced(msg.sender, _numericGuess, ticketCount, currentDay, _chaiId);
+        emit BidPlaced(sender, _numericGuess, ticketCount, currentDay, _chaiId);
     }
 
     function multiBid(MultiBid[] memory bids) virtual public payable {
@@ -111,7 +122,7 @@ contract PredictionGeneric is OrallyConsumer, IWormholeReceiver {
                 numericGuess: _numericGuess,
                 ticketCount: ticketCount,
                 bidderAddress: msg.sender,
-                chainId: block.chainId
+                chainId: chainId
             });
 
             guessIndex[_numericGuess].push(newBid);
@@ -131,12 +142,14 @@ contract PredictionGeneric is OrallyConsumer, IWormholeReceiver {
         require(msg.sender == address(wormholeRelayer), "Only relayer allowed");
 
         // Parse the payload and do the corresponding actions!
-        (string memory greeting, address sender) = abi.decode(
+        (uint256 value, uint256 numericGuess, address sender) = abi.decode(
             payload,
-            (string, address)
+            (uint256, uint256, address)
         );
 
-        emit CrossChainMessageReceived(sourceChain);
+        bid(numericGuess, sourceChain, value, sender);
+
+        emit CrossChainMessageReceived(sourceChain, numericGuess, sender, value);
     }
 
     // close auction before providing winning numeric to avoid reentrancy attack
@@ -158,6 +171,7 @@ contract PredictionGeneric is OrallyConsumer, IWormholeReceiver {
         uint closestDiff = type(uint).max;
         uint winningNumeric;
         uint totalWinningTickets = 0;
+        uint16 chainId;
 
         for(uint i = 0; i < activeGuesses.length; i++) {
             uint guess = activeGuesses[i];
@@ -200,11 +214,49 @@ contract PredictionGeneric is OrallyConsumer, IWormholeReceiver {
             address winner = winnerBid.bidderAddress;
             uint winnerPrize = prizePerTicket * winnerBid.ticketCount;
             uint fee = winnerPrize / 100 * feePercentage;
-            userBalances[owner] += fee;
-            userBalances[winner] += (winnerPrize - fee);
+
+            if (winnerBid.chainId == chainId) {
+                userBalances[owner] += fee;
+                userBalances[winner] += (winnerPrize - fee);
+            } else {
+                userBalances[owner] += fee;
+                sendCrossChainReward(
+                    winnerBid.chainId,
+                    winner,
+                    winnerPrize - fee,
+                    winningNumeric
+                );
+            }
 
             emit WinnerDeclared(winner, currentDay, winningNumeric, winnerPrize);
         }
+    }
+
+    function quoteCrossChainGreeting(
+        uint16 targetChain
+    ) public view returns (uint256 cost) {
+        (cost, ) = wormholeRelayer.quoteEVMDeliveryPrice(
+            targetChain,
+            0,
+            GAS_LIMIT
+        );
+    }
+
+    function sendCrossChainReward(
+        uint16 targetChain,
+        address winner,
+        uint256 reward,
+        uint32 winningNumeric
+    ) public payable {
+        uint256 cost = quoteCrossChainGreeting(targetChain);
+//        require(msg.value == cost);
+        wormholeRelayer.sendPayloadToEvm{value: cost}(
+            targetChain,
+            targetAddress,
+            abi.encode(reward, winningNumeric, winner), // payload
+            0, // no receiver value needed since we're just passing a message
+            GAS_LIMIT
+        );
     }
 
     function withdraw() public {
