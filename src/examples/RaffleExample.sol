@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
 
-import {OrallyPythiaConsumer} from "../consumers/OrallyPythiaConsumer.sol";
+import {ApolloReceiver} from "../apollo/ApolloReceiver.sol";
 
-contract RaffleExample is OrallyPythiaConsumer {
+contract RaffleExample is ApolloReceiver {
     uint256 maxNumberOfTickets;
     uint256 ticketPrice;
     address[] entries;
 
-    constructor(address _executorsRegistry, uint256 _maxNumberOfTickets, uint256 _ticketPrice)
-        OrallyPythiaConsumer(_executorsRegistry)
+    constructor(address _executorsRegistry, address _apolloCoordinator, uint16 _maxNumberOfTickets, uint256 _ticketPrice)
+    ApolloReceiver(_executorsRegistry, _apolloCoordinator)
     {
         maxNumberOfTickets = _maxNumberOfTickets;
         ticketPrice = _ticketPrice;
@@ -21,11 +21,25 @@ contract RaffleExample is OrallyPythiaConsumer {
         entries.push(msg.sender);
     }
 
-    function pickWinner(uint256 _randomNumber) external onlyExecutor {
-        require(entries.length == maxNumberOfTickets, "RaffleExample: Raffle is not full");
+    function pickWinner(uint256 _randomNumber) internal {
         uint256 winnerIndex = _randomNumber % entries.length;
         (bool success,) = payable(entries[winnerIndex]).call{value: address(this).balance}("");
 
         require(success, "RaffleExample: Failed to send Ether to winner");
+
+        entries = new address[](0);
+    }
+
+    function fulfillData(bytes memory data) internal override {
+        (uint256[] memory randomWords) = abi.decode(data, (uint256[]));
+
+        // transform the result to a number between 1 and 20 inclusively
+        uint256 randomNumber = (randomWords[0] % entries.length) + 1;
+
+        pickWinner(randomNumber);
+    }
+
+    function end_raffle() external {
+        apolloCoordinator.requestDataFeed("random", 300000);
     }
 }

@@ -11,11 +11,11 @@ import {ApolloCoordinatorV2} from "src/apollo/ApolloCoordinatorV2.sol";
 import {OrallyPriceFeed} from "src/examples/OrallyPriceFeed.sol";
 
 contract Deploy_V1_V2_upgrade is Script {
-    address constant pmaAddress = 0x05C3F2A3Ae0b7f3775044EEFED8a864c47125F19;
-    address constant sybilAddress = 0x60825063CB0f4EF508854Ad4913f3a6de86B3807;
+    address constant pmaAddress = 0x16bB8cb8DCD224C97a36726EEa6724f6f1169004;
+    address constant sybilAddress = 0xBFD54D868BE89184f19f597489A9FA9385AA708e;
 
     // different between chains
-    address constant amaAddress;
+    // address constant amaAddress;
 
     function run() public {
         console2.log("Running deploy script for the Factory contract");
@@ -35,7 +35,7 @@ contract Deploy_V1_V2_upgrade is Script {
         registry.add(keccak256("PYTHIA_EXECUTOR"), pmaAddress);
         registry.add(keccak256("PYTHIA_EXECUTOR"), address(multi));
 
-        registry.add(keccak256("APOLLO_EXECUTOR"), amaAddress);
+//        registry.add(keccak256("APOLLO_EXECUTOR"), amaAddress);
         registry.add(keccak256("APOLLO_EXECUTOR"), address(multi));
 
         // re-deploy oracles
