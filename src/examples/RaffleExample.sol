@@ -7,12 +7,14 @@ contract RaffleExample is ApolloReceiver {
     uint256 maxNumberOfTickets;
     uint256 ticketPrice;
     address[] entries;
+    address owner;
 
     constructor(address _executorsRegistry, address _apolloCoordinator, uint16 _maxNumberOfTickets, uint256 _ticketPrice)
     ApolloReceiver(_executorsRegistry, _apolloCoordinator)
     {
         maxNumberOfTickets = _maxNumberOfTickets;
         ticketPrice = _ticketPrice;
+        owner = msg.sender;
     }
 
     function enterRaffle() external payable {
@@ -40,6 +42,8 @@ contract RaffleExample is ApolloReceiver {
     }
 
     function end_raffle() external {
+        require(msg.sender == owner, "RaffleExample: Only owner can end the raffle");
+
         apolloCoordinator.requestDataFeed("random", 300000);
     }
 }
