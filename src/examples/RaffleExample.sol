@@ -44,6 +44,6 @@ contract RaffleExample is ApolloReceiver {
     function end_raffle() external {
         require(msg.sender == owner, "RaffleExample: Only owner can end the raffle");
 
-        apolloCoordinator.requestRandomFeed("random", 300000, 1);
+        apolloCoordinator.requestRandomFeed(300000, 1);
     }
 }
