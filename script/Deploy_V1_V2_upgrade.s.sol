@@ -7,7 +7,7 @@ import {console2} from "forge-std/console2.sol";
 import {OrallyVerifierOracle} from "src/OrallyVerifierOracle.sol";
 import {OrallyExecutorsRegistry} from "src/OrallyExecutorsRegistry.sol";
 import {OrallyMulticall} from "src/OrallyMulticall.sol";
-import {ApolloCoordinatorV2} from "src/apollo/ApolloCoordinatorV2.sol";
+import {ApolloCoordinator} from "src/apollo/ApolloCoordinator.sol";
 import {OrallyPriceFeed} from "src/examples/OrallyPriceFeed.sol";
 
 contract Deploy_V1_V2_upgrade is Script {
@@ -28,7 +28,7 @@ contract Deploy_V1_V2_upgrade is Script {
         OrallyMulticall multi = new OrallyMulticall(address(registry));
         console2.log("Multicall deployed at:", address(multi));
 
-        ApolloCoordinatorV2 coordinator = new ApolloCoordinatorV2();
+        ApolloCoordinator coordinator = new ApolloCoordinator();
         console2.log("Coordinator deployed at:", address(coordinator));
 
         registry.initialize();

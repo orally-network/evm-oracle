@@ -1,21 +1,34 @@
-import {OrallyApolloConsumer} from "../consumers/OrallyApolloConsumer.sol";
-import {IApolloCoordinatorV2} from "../interfaces/IApolloCoordinatorV2.sol";
+pragma solidity ^0.8.20;
 
-contract ApolloConsumerExample is OrallyApolloConsumer {
+import {ApolloReceiver} from "../apollo/ApolloReceiver.sol";
+
+contract ApolloConsumerExample is ApolloReceiver {
+    string public dataFeedId;
     uint256 public rate;
     uint256 public decimals;
     uint256 public timestamp;
-    IApolloCoordinatorV2 public apollo;
 
-    constructor(address _executorsRegistry, address _apolloCoordinator) OrallyApolloConsumer(_executorsRegistry) {
-        apollo = IApolloCoordinatorV2(_apolloCoordinator);
-    }
+    constructor(address _executorsRegistry, address _apolloCoordinator) ApolloReceiver(_executorsRegistry, _apolloCoordinator) {}
 
     function requestValue() public {
-        apollo.requestDataFeed("ICP/USD", 300000);
+        apolloCoordinator.requestDataFeed("ICP/USD", 300000);
     }
 
-    function fulfillDataFeed(string memory, uint256 _rate, uint256 _decimals, uint256 _timestamp) external onlyExecutor {
+    function fulfillData(bytes memory data) internal override {
+        (
+            string memory _dataFeedId,
+            uint256 _rate,
+            uint256 _decimals,
+            uint256 _timestamp
+        ) = abi.decode(data, (
+            string,
+            uint256,
+            uint256,
+            uint256
+        ));
+
+
+        dataFeedId = _dataFeedId;
         rate = _rate;
         decimals = _decimals;
         timestamp = _timestamp;

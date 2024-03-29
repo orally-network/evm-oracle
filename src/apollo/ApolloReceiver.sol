@@ -2,7 +2,7 @@
 pragma solidity 0.8.20;
 
 import {OrallyConsumer} from "../consumers/OrallyConsumer.sol";
-import {IApolloCoordinatorV2} from "../interfaces/IApolloCoordinatorV2.sol";
+import {IApolloCoordinator} from "../interfaces/IApolloCoordinator.sol";
 
 /**
  * @title ApolloReceiver
@@ -11,14 +11,14 @@ import {IApolloCoordinatorV2} from "../interfaces/IApolloCoordinatorV2.sol";
  * with customizable handling of different data types and structures.
  */
 abstract contract ApolloReceiver is OrallyConsumer {
-    IApolloCoordinatorV2 public apolloCoordinator;
+    IApolloCoordinator public apolloCoordinator;
 
     /**
      * @dev Constructor that initializes the ApolloReceiver contract with a specific registry address.
      * @param _registry Address of the registry contract in the Orally network.
      */
     constructor(address _registry, address _apolloCoordinator) OrallyConsumer(_registry) {
-        apolloCoordinator = IApolloCoordinatorV2(_apolloCoordinator);
+        apolloCoordinator = IApolloCoordinator(_apolloCoordinator);
     }
 
     /**

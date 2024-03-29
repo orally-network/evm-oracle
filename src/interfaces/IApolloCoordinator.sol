@@ -2,14 +2,14 @@
 pragma solidity 0.8.20;
 
 interface IApolloCoordinator {
-    struct PriceFeedRequest {
-        uint256 requestId; // Unique identifier for the request
-        string dataFeedId; // Identifier for the type of data requested
-        uint256 callbackGasLimit; // Gas limit for the callback transaction
-        address requester; // Address of the requesting contract
-    }
+    function requestDataFeed(string memory dataFeedId, uint256 callbackGasLimit) external;
+    function requestRandomFeed(string memory dataFeedId, uint256 callbackGasLimit, uint256 numWords) external;
 
-    event PriceFeedRequested(
-        uint256 indexed requestId, string indexed dataFeedId, uint256 callbackGasLimit, address indexed requester
+    event DataFeedRequested(
+        uint256 indexed requestId, string dataFeedId, uint256 callbackGasLimit, address indexed requester
+    );
+
+    event RandomFeedRequested(
+        uint256 indexed requestId, string dataFeedId, uint256 callbackGasLimit, uint256 numWords, address indexed requester
     );
 }
