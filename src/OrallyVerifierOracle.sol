@@ -12,6 +12,13 @@ import {IOrallyVerifierOracle} from "./interfaces/IOrallyVerifierOracle.sol";
 contract OrallyVerifierOracle is Ownable, IOrallyVerifierOracle {
     using ECDSA for bytes32;
 
+    struct Feed {
+        string pairId;
+        uint256 price;
+        uint256 decimals;
+        uint256 timestamp;
+    }
+
     mapping(address => bool) public reporters;
 
     constructor(address owner) Ownable(owner) {}
@@ -28,6 +35,15 @@ contract OrallyVerifierOracle is Ownable, IOrallyVerifierOracle {
         bytes memory _signature
     ) public view returns (bool) {
         return verifyPacked(keccak256(abi.encodePacked(_pairId, _price, _decimals, _timestamp)), _signature);
+    }
+
+    function verifyUnpackedMulti(
+        Feed[] memory _feeds,
+        bytes memory _signature
+    ) public view returns (bool) {
+
+
+        return verifyPacked(keccak256(abi.encodePacked(_feeds)), _signature);
     }
 
     function unpack(bytes32 _message) public pure returns (string memory, uint256, uint256, uint256) {
