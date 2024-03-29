@@ -6,14 +6,10 @@ import {IApolloCoordinator} from "../interfaces/IApolloCoordinator.sol";
 /**
  * @title ApolloCoordinator
  * @dev This contract allows consumer contracts to request data from the Apollo Network.
- * It is similar in structure to Chainlink's VRFCoordinatorV2, but tailored for the Apollo system.
  */
 contract ApolloCoordinator is IApolloCoordinator {
     // Counter for generating unique request IDs
-    uint256 public requestCounter;
-
-    // All requests by ID
-    mapping(uint256 => PriceFeedRequest) public requests;
+    uint256 public requestCounter = 0;
 
     /**
      * @notice Requests data from the Apollo network.
@@ -24,27 +20,22 @@ contract ApolloCoordinator is IApolloCoordinator {
         string calldata dataFeedId,
         uint256 callbackGasLimit
     ) external {
-        emit PriceFeedRequested(dataFeedId, callbackGasLimit, msg.sender);
-    }
-
-    function _getRequestId() internal returns (uint256 requestId) {
-        requestId = requestCounter;
+        emit DataFeedRequested(requestCounter, dataFeedId, callbackGasLimit, msg.sender);
         requestCounter++;
     }
 
-    function getRequestsFromId(
-        uint256 _start
-    ) public view returns (PriceFeedRequest[] memory requestRange) {
-        requestRange = getRequestsInRange(_start, requestCounter);
-    }
-
-    function getRequestsInRange(
-        uint256 _start,
-        uint256 _end
-    ) public view returns (PriceFeedRequest[] memory requestRange) {
-        requestRange = new PriceFeedRequest[](_end - _start);
-        for (uint256 i = _start; i < _end; i++) {
-            requestRange[i - _start] = requests[i];
-        }
+    /**
+     * @notice Requests data from the Apollo network.
+     * @param dataFeedId The identifier of the data feed being requested.
+     * @param callbackGasLimit The gas limit for the callback transaction.
+     * @param numWords The number of words to request.
+     */
+    function requestRandomFeed(
+        string calldata dataFeedId,
+        uint256 callbackGasLimit,
+        uint256 numWords
+    ) external {
+        emit RandomFeedRequested(requestCounter, dataFeedId, callbackGasLimit, numWords, msg.sender);
+        requestCounter++;
     }
 }

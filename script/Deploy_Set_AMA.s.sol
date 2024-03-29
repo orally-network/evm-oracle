@@ -7,7 +7,7 @@ import {console2} from "forge-std/console2.sol";
 import {OrallyVerifierOracle} from "src/OrallyVerifierOracle.sol";
 import {OrallyExecutorsRegistry} from "src/OrallyExecutorsRegistry.sol";
 import {OrallyMulticall} from "src/OrallyMulticall.sol";
-import {ApolloCoordinatorV2} from "src/apollo/ApolloCoordinatorV2.sol";
+import {ApolloCoordinator} from "src/apollo/ApolloCoordinator.sol";
 import {OrallyPriceFeed} from "src/examples/OrallyPriceFeed.sol";
 
 contract Deploy_Set_AMA is Script {
