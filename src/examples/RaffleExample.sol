@@ -33,7 +33,7 @@ contract RaffleExample is ApolloReceiver {
     }
 
     function fulfillData(bytes memory data) internal override {
-        (uint256[] memory randomWords) = abi.decode(data, (uint256[]));
+        (, uint256[] memory randomWords) = abi.decode(data, (uint256, uint256[]));
 
         // transform the result to a number between 1 and 20 inclusively
         uint256 randomNumber = (randomWords[0] % entries.length) + 1;
