@@ -1,20 +1,16 @@
 pragma solidity ^0.8.20;
 
-import {OrallyApolloConsumer} from "../consumers/OrallyApolloConsumer.sol";
-import {IApolloCoordinator} from "../interfaces/IApolloCoordinator.sol";
+import {ApolloReceiver} from "../apollo/ApolloReceiver.sol";
 
-contract ApolloConsumerExample is OrallyApolloConsumer {
+contract ApolloConsumerExample is ApolloReceiver {
     uint256 public rate;
     uint256 public decimals;
     uint256 public timestamp;
-    IApolloCoordinator public apollo;
 
-    constructor(address _executorsRegistry, address _apolloCoordinator) OrallyApolloConsumer(_executorsRegistry) {
-        apollo = IApolloCoordinator(_apolloCoordinator);
-    }
+    constructor(address _executorsRegistry, address _apolloCoordinator) ApolloReceiver(_executorsRegistry, _apolloCoordinator) {}
 
     function requestValue() public {
-        apollo.requestDataFeed("ICP/USD", 300000);
+        apolloCoordinator.requestDataFeed("ICP/USD", 300000);
     }
 
     function fulfillDataFeed(
