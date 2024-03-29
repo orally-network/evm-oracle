@@ -8,6 +8,9 @@ import {IApolloCoordinatorV2} from "../interfaces/IApolloCoordinatorV2.sol";
  * @dev This contract allows consumer contracts to request data from the Apollo Network.
  */
 contract ApolloCoordinatorV2 is IApolloCoordinatorV2 {
+    // Counter for generating unique request IDs
+    uint256 public requestCounter = 0;
+
     /**
      * @notice Requests data from the Apollo network.
      * @param dataFeedId The identifier of the data feed being requested.
@@ -17,6 +20,22 @@ contract ApolloCoordinatorV2 is IApolloCoordinatorV2 {
         string calldata dataFeedId,
         uint256 callbackGasLimit
     ) external {
-        emit PriceFeedRequested(dataFeedId, callbackGasLimit, msg.sender);
+        emit DataFeedRequested(requestCounter, dataFeedId, callbackGasLimit, msg.sender);
+        requestCounter++;
+    }
+
+    /**
+     * @notice Requests data from the Apollo network.
+     * @param dataFeedId The identifier of the data feed being requested.
+     * @param callbackGasLimit The gas limit for the callback transaction.
+     * @param numWords The number of words to request.
+     */
+    function requestRandomFeed(
+        string calldata dataFeedId,
+        uint256 callbackGasLimit,
+        uint256 numWords
+    ) external {
+        emit RandomFeedRequested(requestCounter, dataFeedId, callbackGasLimit, msg.sender, numWords);
+        requestCounter++;
     }
 }
