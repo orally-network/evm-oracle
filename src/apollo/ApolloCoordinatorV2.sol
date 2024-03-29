@@ -35,7 +35,7 @@ contract ApolloCoordinatorV2 is IApolloCoordinatorV2 {
         uint256 callbackGasLimit,
         uint256 numWords
     ) external {
-        emit RandomFeedRequested(requestCounter, dataFeedId, callbackGasLimit, msg.sender, numWords);
+        emit RandomFeedRequested(requestCounter, dataFeedId, callbackGasLimit, numWords, msg.sender);
         requestCounter++;
     }
 }
