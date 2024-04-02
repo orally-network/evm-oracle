@@ -14,3 +14,5 @@ arbitrum_goerli = "${ARBITRUM_GOERLI_RPC_URL}"
 
 [etherscan]
 168587773 = { key = "verifyContract", url = "https://api.routescan.io/v2/network/testnet/evm/168587773/etherscan" }
+167008 = { key = "verifyContract", url = "https://api.routescan.io/v2/network/testnet/evm/167008/etherscan" }
+204 = { key = "${OPBNB_API_KEY}", url = "https://api-opbnb.bscscan.com/api" }
