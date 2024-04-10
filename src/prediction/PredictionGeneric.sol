@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
 
-import {OrallyConsumer} from "../consumers/OrallyConsumer.sol";
+import {OrallyConsumer} from "../registry/OrallyConsumer.sol";
 
 contract PredictionGeneric is OrallyConsumer {
     uint256 public ticketPrice = 0.0015 ether;

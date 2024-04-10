@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import {IOrallyVerifierOracle} from "./interfaces/IOrallyVerifierOracle.sol";
+import {IOrallyVerifierOracle} from "./IOrallyVerifierOracle.sol";
 
 /**
  * @title OrallyVerifierOracle

@@ -1,6 +1,6 @@
 pragma solidity ^0.8.20;
 
-import {ApolloReceiver} from "../apollo/ApolloReceiver.sol";
+import {ApolloReceiver} from "../ApolloReceiver.sol";
 
 contract ApolloConsumerExample is ApolloReceiver {
     uint256 public requestId;

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import {IOrallyExecutorsRegistry} from "./interfaces/IOrallyExecutorsRegistry.sol";
+import {IOrallyExecutorsRegistry} from "./IOrallyExecutorsRegistry.sol";
 
 /**
  * @title OrallyExecutorsRegistry

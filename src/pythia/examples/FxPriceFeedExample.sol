@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
 
-import {OrallyPythiaConsumer} from "../consumers/OrallyPythiaConsumer.sol";
+import {OrallyPythiaConsumer} from "../pythia/OrallyPythiaConsumer.sol";
 
 interface IFxPriceFeedExample {
     function pair() external view returns (string memory);

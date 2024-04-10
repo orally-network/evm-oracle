@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
 
-import {IOrallyExecutorsRegistry} from "../interfaces/IOrallyExecutorsRegistry.sol";
+import {IOrallyExecutorsRegistry} from "../registry/IOrallyExecutorsRegistry.sol";
 
-contract OrallyApolloConsumer {
+contract OrallyPythiaConsumer {
     IOrallyExecutorsRegistry private registry;
 
     constructor(address _registry) {
@@ -11,13 +11,13 @@ contract OrallyApolloConsumer {
     }
 
     function isExecutor(address _addr) public view returns (bool) {
-        return registry.isApolloExecutor(_addr);
+        return registry.isPythiaExecutor(_addr);
     }
 
     modifier onlyExecutor() {
-        if (!registry.isApolloExecutor(msg.sender)) revert ApolloCallerUnauthorized(msg.sender);
+        if (!registry.isPythiaExecutor(msg.sender)) revert PythiaCallerUnauthorized(msg.sender);
         _;
     }
 
-    error ApolloCallerUnauthorized(address caller);
+    error PythiaCallerUnauthorized(address caller);
 }

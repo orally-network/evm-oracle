@@ -4,11 +4,11 @@ pragma solidity ^0.8.13;
 import "forge-std/Script.sol";
 import {console2} from "forge-std/console2.sol";
 
-import {OrallyVerifierOracle} from "src/OrallyVerifierOracle.sol";
-import {OrallyExecutorsRegistry} from "src/OrallyExecutorsRegistry.sol";
-import {OrallyMulticall} from "src/OrallyMulticall.sol";
+import {OrallyVerifierOracle} from "../src/sybil/OrallyVerifierOracle.sol";
+import {OrallyExecutorsRegistry} from "../src/registry/OrallyExecutorsRegistry.sol";
+import {OrallyMulticall} from "../src/registry/OrallyMulticall.sol";
 import {ApolloCoordinator} from "src/apollo/ApolloCoordinator.sol";
-import {OrallyPriceFeed} from "src/examples/OrallyPriceFeed.sol";
+import {OrallyPriceFeed} from "../src/pythia/examples/OrallyPriceFeed.sol";
 
 contract Deploy_1 is Script {
     address constant pmaAddress = 0x05C3F2A3Ae0b7f3775044EEFED8a864c47125F19;

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
 
-import {OrallySybilConsumer} from "../consumers/OrallySybilConsumer.sol";
+import {OrallySybilConsumer} from "../OrallySybilConsumer.sol";
 
 contract PriceConsumerExample is OrallySybilConsumer {
     uint256 public price;
