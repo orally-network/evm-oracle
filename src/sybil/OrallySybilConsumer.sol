@@ -10,16 +10,16 @@ contract OrallySybilConsumer {
         oracle = IOrallyVerifierOracle(_oracle);
     }
 
-    function verifyPacked(bytes32 _message, bytes memory _signature) public view returns (bool) {
+    function verifyPacked(bytes32 _message, bytes calldata _signature) public view returns (bool) {
         return oracle.verifyPacked(_message, _signature);
     }
 
     function verifyUnpacked(
-        string memory _pairId,
+        string calldata _pairId,
         uint256 _price,
         uint256 _decimals,
         uint256 _timestamp,
-        bytes memory _signature
+        bytes calldata _signature
     ) public view returns (bool) {
         return oracle.verifyUnpacked(_pairId, _price, _decimals, _timestamp, _signature);
     }

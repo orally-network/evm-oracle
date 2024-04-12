@@ -10,7 +10,7 @@ contract PriceConsumerExample is OrallySybilConsumer {
 
     constructor(address _oracle) OrallySybilConsumer(_oracle) {}
 
-    function updatePacked(bytes32 _message, bytes memory _signature) public {
+    function updatePacked(bytes32 _message, bytes calldata _signature) public {
         require(verifyPacked(_message, _signature), "PriceConsumerExample: Invalid signature");
         (, uint256 _price, uint256 _decimals, uint256 _timestamp) = unpack(_message);
         price = _price;
@@ -19,11 +19,11 @@ contract PriceConsumerExample is OrallySybilConsumer {
     }
 
     function updateUnpacked(
-        string memory _pairId,
+        string calldata _pairId,
         uint256 _price,
         uint256 _decimals,
         uint256 _timestamp,
-        bytes memory _signature
+        bytes calldata _signature
     ) public {
         require(
             verifyUnpacked(_pairId, _price, _decimals, _timestamp, _signature),

@@ -59,7 +59,7 @@ contract WeatherAuction is OrallyPythiaConsumer {
         auctionOpen = false;
     }
 
-    function updateTemperature(string memory, uint256 _temperature, uint256 _decimals, uint256 _timestamp) public onlyExecutor {
+    function updateTemperature(string memory, uint256 _temperature, uint256, uint256 _timestamp) public onlyExecutor {
         require(totalTickets > 0, "No tickets sold for today.");
         require(!auctionOpen, "Auction is still open.");
         currentTemperature = _temperature;

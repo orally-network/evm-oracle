@@ -12,7 +12,16 @@ import {IOrallyVerifierOracle} from "./IOrallyVerifierOracle.sol";
 contract OrallyVerifierOracle is Ownable, IOrallyVerifierOracle {
     using ECDSA for bytes32;
 
+    struct PriceFeed {
+        string pairId;
+        uint256 price;
+        uint256 decimals;
+        uint256 timestamp;
+    }
+
     mapping(address => bool) public reporters;
+
+    mapping(string => PriceFeed) public priceFeeds;
 
     constructor(address owner) Ownable(owner) {}
 
@@ -32,6 +41,22 @@ contract OrallyVerifierOracle is Ownable, IOrallyVerifierOracle {
 
     function unpack(bytes32 _message) public pure returns (string memory, uint256, uint256, uint256) {
         return abi.decode(abi.encodePacked(_message), (string, uint256, uint256, uint256));
+    }
+
+    function verifyPriceFeed(bytes memory data) public view returns (string memory, uint256, uint256, uint256) {
+        (string memory pairId, uint256 price, uint256 decimals, uint256 timestamp, bytes memory signature) = abi.decode(data, (string, uint256, uint256, uint256, bytes));
+
+        require(verifyUnpacked(pairId, price, decimals, timestamp, signature), "Invalid signature");
+
+        return (pairId, price, decimals, timestamp);
+    }
+
+    function verifyPriceFeedWithCache(bytes memory data) public returns (string memory, uint256, uint256, uint256) {
+        (string memory pairId, uint256 price, uint256 decimals, uint256 timestamp) = verifyPriceFeed(data);
+
+        priceFeeds[pairId] = PriceFeed(pairId, price, decimals, timestamp);
+
+        return (pairId, price, decimals, timestamp);
     }
 
     function isReporter(address _reporter) external view returns (bool) {
