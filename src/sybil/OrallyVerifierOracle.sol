@@ -121,6 +121,19 @@ contract OrallyVerifierOracle is Ownable, IOrallyVerifierOracle {
     }
 
     /**
+     * @notice Verifies and returns the details of a chain data feed from provided feed.
+     * @param chainData The packed data containing the chain data feed and its signature.
+     * @return Tuple of chainData and metaData if the verification is successful.
+     */
+    function verifyChainData(bytes memory chainData) external view returns (bytes memory, bytes memory) {
+        (bytes memory data, bytes memory meta, bytes memory signature) = abi.decode(chainData, (bytes, bytes, bytes));
+
+        require(verifyPacked(keccak256(abi.encodePacked(data, meta)), signature), "Invalid signature");
+
+        return (data, meta);
+    }
+
+    /**
      * @notice Checks if an address is an authorized reporter.
      * @param _reporter The address to check.
      */

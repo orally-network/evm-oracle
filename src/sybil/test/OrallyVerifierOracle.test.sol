@@ -61,6 +61,7 @@ contract OrallyVerifierOracleTest is Test {
 
     uint256 fork;
     OrallyVerifierOracle verifier;
+    // test privateKey
     uint256 reporterKey = 0xa11ce;
     address reporter;
 
@@ -147,5 +148,9 @@ contract OrallyVerifierOracleTest is Test {
 
         assertEq(id, "custom_get_logs_example");
         assertEq(value, "ETH/USD");
+    }
+
+    function testVerifyChainData() public {
+        // ...
     }
 }

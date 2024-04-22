@@ -81,4 +81,11 @@ interface IOrallyVerifierOracle {
      * @return Tuple containing the feed ID and the string value.
      */
     function verifyCustomString(bytes calldata data) external returns (string memory, string memory);
+
+    /**
+     * @notice Verifies and returns the details of a chain data feed from provided data.
+     * @param data The packed data containing the chain data feed and its signature.
+     * @return Tuple of chainData and metaData if the verification is successful.
+     */
+    function verifyChainData(bytes calldata data) external returns (bytes memory, bytes memory);
 }
