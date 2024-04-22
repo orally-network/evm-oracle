@@ -11,7 +11,7 @@ contract PriceFeedPrediction is PredictionGeneric {
     }
 
     // for adapting data if needed
-    function updatePriceFeed(string memory _feedId, uint256 _btcRate, uint256 _decimals, uint256 _timestamp) public onlyExecutor {
+    function updatePriceFeed(uint256 workflowId, string memory _feedId, uint256 _btcRate, uint256 _decimals, uint256 _timestamp) public onlyExecutor(workflowId) {
         updateNumeric(_feedId, _btcRate / 10**_decimals, _decimals, _timestamp);
     }
 }

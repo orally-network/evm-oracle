@@ -10,7 +10,7 @@ contract WeatherPrediction is PredictionGeneric {
     }
 
     // for adapting data if needed
-    function updateTemperature(string memory _feedId, uint256 _temperature, uint256 _decimals, uint256 _timestamp) public onlyExecutor {
+    function updateTemperature(uint256 workflowId, string memory _feedId, uint256 _temperature, uint256 _decimals, uint256 _timestamp) public onlyExecutor(workflowId) {
         updateNumeric(_feedId, _temperature, _decimals, _timestamp);
     }
 }

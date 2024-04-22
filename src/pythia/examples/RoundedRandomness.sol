@@ -19,11 +19,11 @@ contract RoundedRandomness is OrallyPythiaConsumer, RoundedRandomnessInterface {
 
     mapping(uint80 => uint64) public rounds;
 
-    constructor(address _executorsRegistry, string memory _description) OrallyPythiaConsumer(_executorsRegistry) {
+    constructor(address _executorsRegistry, string memory _description) OrallyPythiaConsumer(_executorsRegistry, msg.sender) {
         description = _description;
     }
 
-    function updateRandom(uint64 _random) external onlyExecutor {
+    function updateRandom(uint256 workflowId, uint64 _random) external onlyExecutor(workflowId) {
         rounds[currentRoundId] = _random;
         unchecked {
             currentRoundId++;

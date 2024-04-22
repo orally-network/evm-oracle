@@ -6,7 +6,6 @@ import {OrallyPythiaConsumer} from "../pythia/OrallyPythiaConsumer.sol";
 // temperature treats with decimals=1 (e.g. 25.5 = 255)
 contract WeatherAuction is OrallyPythiaConsumer {
     uint256 constant TICKET_PRICE = 0.001 ether;
-    address public owner;
     struct Bid {
         uint temperatureGuess;
         uint ticketCount;
@@ -25,14 +24,8 @@ contract WeatherAuction is OrallyPythiaConsumer {
     event WinnerDeclared(address winner, uint day, uint temperature, uint winnerPrize);
     event Withdrawal(address indexed user, uint amount);
 
-    constructor(address _executorsRegistry) OrallyPythiaConsumer(_executorsRegistry) {
-        owner = msg.sender;
+    constructor(address _executorsRegistry) OrallyPythiaConsumer(_executorsRegistry, msg.sender) {
         auctionOpen = true;
-    }
-
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function.");
-        _;
     }
 
     function bid(uint _temperatureGuess) public payable {
@@ -54,12 +47,12 @@ contract WeatherAuction is OrallyPythiaConsumer {
     }
 
     // close auction before providing winning temperature to avoid reentrancy attack
-    function closeAuction() public onlyExecutor {
+    function closeAuction(uint256 workflowId) public onlyExecutor(workflowId) {
         require(totalTickets > 0, "No tickets sold for today.");
         auctionOpen = false;
     }
 
-    function updateTemperature(string memory, uint256 _temperature, uint256, uint256 _timestamp) public onlyExecutor {
+    function updateTemperature(uint256 workflowId, string memory, uint256 _temperature, uint256, uint256 _timestamp) public onlyExecutor(workflowId) {
         require(totalTickets > 0, "No tickets sold for today.");
         require(!auctionOpen, "Auction is still open.");
         currentTemperature = _temperature;
@@ -105,7 +98,7 @@ contract WeatherAuction is OrallyPythiaConsumer {
             address winner = winnerBid.bidderAddress;
             uint winnerPrize = prizePerTicket * winnerBid.ticketCount;
             uint fee = winnerPrize / 100 * feePercentage;
-            userBalances[owner] += fee;
+            userBalances[owner()] += fee;
             userBalances[winner] += (winnerPrize - fee);
 
             emit WinnerDeclared(winner, currentDay, winningTemperature, winnerPrize);
@@ -125,7 +118,7 @@ contract WeatherAuction is OrallyPythiaConsumer {
     // Withdraw function for contract owner
     function ownerWithdraw() public onlyOwner {
         uint amount = address(this).balance;
-        payable(owner).transfer(amount);
+        payable(owner()).transfer(amount);
     }
 
     function clearBids() internal {

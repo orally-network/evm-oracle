@@ -6,7 +6,7 @@ import {IApolloCoordinator} from "./IApolloCoordinator.sol";
 
 /**
  * @title ApolloReceiver
- * @dev Inherits from OrallyConsumer to create a contract capable of receiving data from the Orally oracle network.
+ * @dev Inherits from OrallyApolloConsumer to create a contract capable of receiving data from the Orally oracle network.
  * This contract acts as a template for contracts that want to receive data from the Orally oracle,
  * with customizable handling of different data types and structures.
  */
