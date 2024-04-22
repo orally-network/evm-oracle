@@ -1,6 +1,7 @@
 # Compiler files
 cache/
 out/
+my-output-dir/
 
 # Ignores development broadcast logs
 !/broadcast
