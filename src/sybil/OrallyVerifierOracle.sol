@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {IOrallyVerifierOracle} from "./IOrallyVerifierOracle.sol";
+import {OrallyStructs} from "../OrallyStructs.sol";
 
 import {console2} from "@forge-std/console2.sol";
 
@@ -13,24 +14,20 @@ import {console2} from "@forge-std/console2.sol";
  * It handles verification of signed data, unpacks and caches it for quick access.
  * The contract uses ECDSA for cryptographic operations and inherits from Ownable for access control.
  */
-contract OrallyVerifierOracle is Ownable, IOrallyVerifierOracle {
+contract OrallyVerifierOracle is IOrallyVerifierOracle, Ownable {
     using ECDSA for bytes32;
-
-    // Structure to store information about each price feed
-    struct PriceFeed {
-        string pairId;     // The identifier for the currency pair
-        uint256 price;     // The latest price of the currency pair
-        uint256 decimals;  // The decimal places for the price to ensure precision
-        uint256 timestamp; // The timestamp when the price was last updated
-    }
 
     // Mapping to track authorized reporters who can sign and submit price feeds (Sybil permissionless wallet)
     mapping(address => bool) public reporters;
 
     // Mapping to store the latest price feeds by pair ID
-    mapping(string => PriceFeed) public priceFeeds;
+    mapping(string => OrallyStructs.PriceFeed) public priceFeeds;
 
     constructor(address owner) Ownable(owner) {}
+
+    function getPriceFeed(string memory pairId) external view returns (OrallyStructs.PriceFeed memory) {
+        return priceFeeds[pairId];
+    }
 
     /**
      * @notice Verifies if a packed message signature is valid and from an authorized reporter.
@@ -75,10 +72,10 @@ contract OrallyVerifierOracle is Ownable, IOrallyVerifierOracle {
      * @param data The packed byte array containing the price feed and its signature.
      * @return Tuple of pair ID, price, decimals, and timestamp if the verification is successful.
      */
-    function verifyPriceFeed(bytes memory data) public view returns (string memory, uint256, uint256, uint256) {
+    function verifyPriceFeed(bytes memory data) public view returns (OrallyStructs.PriceFeed memory) {
         (string memory pairId, uint256 price, uint256 decimals, uint256 timestamp, bytes memory signature) = abi.decode(data, (string, uint256, uint256, uint256, bytes));
         require(verifyUnpacked(pairId, price, decimals, timestamp, signature), "Invalid signature");
-        return (pairId, price, decimals, timestamp);
+        return OrallyStructs.PriceFeed(pairId, price, decimals, timestamp);
     }
 
     /**
@@ -87,11 +84,11 @@ contract OrallyVerifierOracle is Ownable, IOrallyVerifierOracle {
      * @param data The packed data containing the price feed and its signature.
      * @return Tuple of pair ID, price, decimals, and timestamp.
      */
-    function verifyPriceFeedWithCache(bytes memory data) external returns (string memory, uint256, uint256, uint256) {
-        (string memory pairId, uint256 price, uint256 decimals, uint256 timestamp) = verifyPriceFeed(data);
-        priceFeeds[pairId] = PriceFeed(pairId, price, decimals, timestamp);
-        emit PriceFeedSaved(pairId, price, decimals, timestamp);
-        return (pairId, price, decimals, timestamp);
+    function verifyPriceFeedWithCache(bytes memory data) external returns (OrallyStructs.PriceFeed memory) {
+        OrallyStructs.PriceFeed memory priceFeed = verifyPriceFeed(data);
+        priceFeeds[priceFeed.pairId] = priceFeed;
+        emit PriceFeedSaved(priceFeed.pairId, priceFeed.price, priceFeed.decimals, priceFeed.timestamp);
+        return priceFeed;
     }
 
     /**
@@ -99,12 +96,12 @@ contract OrallyVerifierOracle is Ownable, IOrallyVerifierOracle {
      * @param data The packed data containing custom numerical information and its signature.
      * @return Tuple containing the feed ID, numerical value, and decimals.
      */
-    function verifyCustomNumber(bytes memory data) external view returns (string memory, uint256, uint256) {
+    function verifyCustomNumber(bytes memory data) external view returns (OrallyStructs.CustomNumber memory) {
         (string memory feedId, uint256 number, uint256 decimals, bytes memory signature) = abi.decode(data, (string, uint256, uint256, bytes));
 
         require(verifyPacked(keccak256(abi.encodePacked(feedId, number, decimals)), signature), "Invalid signature");
 
-        return (feedId, number, decimals);
+        return OrallyStructs.CustomNumber(feedId, number, decimals);
     }
 
     /**
@@ -112,12 +109,12 @@ contract OrallyVerifierOracle is Ownable, IOrallyVerifierOracle {
      * @param data The packed data containing custom string information and its signature.
      * @return Tuple containing the feed ID and the string value.
      */
-    function verifyCustomString(bytes memory data) external view returns (string memory, string memory) {
+    function verifyCustomString(bytes memory data) external view returns (OrallyStructs.CustomString memory) {
         (string memory feedId, string memory value, bytes memory signature) = abi.decode(data, (string, string, bytes));
 
         require(verifyPacked(keccak256(abi.encodePacked(feedId, value)), signature), "Invalid signature");
 
-        return (feedId, value);
+        return OrallyStructs.CustomString(feedId, value);
     }
 
     /**

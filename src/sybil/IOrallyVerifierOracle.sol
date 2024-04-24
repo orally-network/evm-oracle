@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
 
+import {OrallyStructs} from "../OrallyStructs.sol";
+
 /**
  * @title IOrallyVerifierOracle
  * @notice Interface for the OrallyVerifierOracle contract.
@@ -13,6 +15,12 @@ interface IOrallyVerifierOracle {
     event ReporterAdded(address indexed reporter);
     event ReporterRemoved(address indexed reporter);
     event PriceFeedSaved(string indexed pairId, uint256 price, uint256 decimals, uint256 timestamp);
+
+    /**
+     * @notice Get the details of a specific price feed for cache.
+     * @param pairId The identifier for the currency pair.
+     */
+    function getPriceFeed(string memory pairId) external view returns (OrallyStructs.PriceFeed memory);
 
     /**
      * @notice Verifies the authenticity of a packed message using a signature.
@@ -58,7 +66,7 @@ interface IOrallyVerifierOracle {
      * @param data The packed data containing the price feed and its signature.
      * @return Tuple of pair ID, price, decimals, and timestamp if the verification is successful.
      */
-    function verifyPriceFeed(bytes memory data) external view returns (string memory, uint256, uint256, uint256);
+    function verifyPriceFeed(bytes memory data) external view returns (OrallyStructs.PriceFeed memory);
 
     /**
      * @notice Verifies, caches, and returns the details of a price feed.
@@ -66,21 +74,21 @@ interface IOrallyVerifierOracle {
      * @param data The packed data containing the price feed and its signature.
      * @return Tuple of pair ID, price, decimals, and timestamp.
      */
-    function verifyPriceFeedWithCache(bytes calldata data) external returns (string memory, uint256, uint256, uint256);
+    function verifyPriceFeedWithCache(bytes calldata data) external returns (OrallyStructs.PriceFeed memory);
 
     /**
      * @notice Verifies and returns custom numerical data from provided packed data.
      * @param data The packed data containing custom numerical information and its signature.
      * @return Tuple containing the feed ID, numerical value, and decimals.
      */
-    function verifyCustomNumber(bytes calldata data) external returns (string memory, uint256, uint256);
+    function verifyCustomNumber(bytes calldata data) external returns (OrallyStructs.CustomNumber memory);
 
     /**
      * @notice Verifies and returns custom string data from provided packed data.
      * @param data The packed data containing custom string information and its signature.
      * @return Tuple containing the feed ID and the string value.
      */
-    function verifyCustomString(bytes calldata data) external returns (string memory, string memory);
+    function verifyCustomString(bytes calldata data) external returns (OrallyStructs.CustomString memory);
 
     /**
      * @notice Verifies and returns the details of a chain data feed from provided data.

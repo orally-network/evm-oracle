@@ -1,10 +1,11 @@
 {
-  "name": "orally-sdk-solidity",
-  "version": "1.0.0",
+  "name": "@orally-network/solidity-sdk",
+  "version": "1.0.1",
   "description": "Verify, automate, deliver data to smart contract from Orally Network",
   "scripts": {
     "format": "npx prettier --write .",
-    "check-abi": "git diff --exit-code abis"
+    "check-abi": "git diff --exit-code abis",
+    "directory": "orally-sdk-solidity"
   },
   "repository": {
     "type": "git",
