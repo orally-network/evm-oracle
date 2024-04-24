@@ -35,34 +35,37 @@ Then add the following line to your `remappings.txt` file:
 
 ## Example Usage 1: Consuming Verifiable Price Feeds
 
-To consume prices you should use the [`IOrallyVerifierOracle`](IOrallyVerifierOracle.sol) interface. Please make sure to read the documentation of this interface in order to use the prices safely.
+To consume prices you should use the [`IOrallyVerifierOracle`](IOrallyVerifierOracle.sol) interface. 
 
-For example, to read the latest price, call [`getPriceFeed`](IOrallyVerifierOracle.sol) with the feed ID of the price feed you're interested in. 
+To verify price feed you should call the `verifyPriceFeedWithCache` function with `priceData` from HTTP Gateway with a proof (`https://tysiw-qaaaa-aaaak-qcikq-cai.icp0.io/get_xrc_data_with_proof?id=DOGE/SHIB&bytes=true
+`). You will get [`PriceFeed`](OrallyStructs.sol) struct as a return with the price, decimals, and timestamp.
+
+Later to read the latest price, you can call [`getPriceFeed`](IOrallyVerifierOracle.sol) with the feed ID of the price feed you're interested in. 
 
 ```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import "@orally-network/solidity-sdk/IOrallyVerifierOracle.sol";
+import "@orally-network/solidity-sdk/OrallyStructs.sol";
 
 contract ExampleContract {
-  IOrallyVerifierOracle oracle;
+    IOrallyVerifierOracle oracle;
 
-  constructor(address orallyVerifierOracleAddress) {
-    oracle = IOrallyVerifierOracle(orallyVerifierOracleAddress);
-  }
+    constructor(address orallyVerifierOracleAddress) {
+        oracle = IOrallyVerifierOracle(orallyVerifierOracleAddress);
+    }
 
-  // price data from
-  // https://tysiw-qaaaa-aaaak-qcikq-cai.icp0.io/get_xrc_data_with_proof?id=DOGE/SHIB&bytes=true
-  function getBtcUsdPrice(
-    bytes calldata priceFeedData
-  ) public payable returns (IOrallyVerifierOracle.PriceFeed memory) {
-    // Verify the price feed data and get the price, decimals, and timestamp.
-    (string memory pairId, uint256 price, uint256 decimals, uint256 timestamp) = oracle.verifyPriceFeed(priceFeedData);
-    // if this price feed will be needed for later usage you can use `verifyPriceFeedWithCache` instead (+90k to gas) and access as `oracle.getPriceFeed("DOGE/SHIB")`
+    // price data from
+    // https://tysiw-qaaaa-aaaak-qcikq-cai.icp0.io/get_xrc_data_with_proof?id=DOGE/SHIB&bytes=true
+    function getDogeShibPrice(
+        bytes calldata priceFeedData
+    ) public payable returns (OrallyStructs.PriceFeed memory) {
+        // Verify the price feed data and get the price, decimals, and timestamp.
+        OrallyStructs.PriceFeed priceFeed = oracle.verifyPriceFeed(priceFeedData);
+        // if this price feed will be needed for later usage you can use `verifyPriceFeedWithCache` instead (+90k to gas) and access as `oracle.getPriceFeed("DOGE/SHIB")`
 
-    return oracle.getPriceFeed("DOGE/SHIB");
-  }
+        return priceFeed;
+    }
 }
-
 ```
