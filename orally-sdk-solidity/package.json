@@ -6,7 +6,8 @@
     "format": "npx prettier --write .",
     "check-abi": "git diff --exit-code abis",
     "directory": "orally-sdk-solidity",
-    "pack": "sh pack.sh"
+    "pack": "sh pack.sh",
+    "publish": "npm publish --access public"
   },
   "repository": {
     "type": "git",
