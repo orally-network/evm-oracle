@@ -76,6 +76,7 @@ contract ExampleContract {
     }
 }
 ```
+[More Details in Documentation](https://docs.orally.network/orally-products/sybil)
 
 ## Example 2: Consuming Verifiable Side Chain Data
 
