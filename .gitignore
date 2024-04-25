@@ -16,4 +16,6 @@ verify
 commands.txt
 
 # only used to package @openzeppelin/contracts
-orally-sdk-solidity
+orally-sdk-solidity/*.sol
+orally-sdk-solidity/abis/*.json
+orally-sdk-solidity/readme.md
