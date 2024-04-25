@@ -1,6 +1,7 @@
 # Compiler files
 cache/
 out/
+my-output-dir/
 
 # Ignores development broadcast logs
 !/broadcast
@@ -13,3 +14,8 @@ verify
 .env
 .idea
 commands.txt
+
+# only used to package @openzeppelin/contracts
+orally-sdk-solidity/*.sol
+orally-sdk-solidity/abis/*.json
+orally-sdk-solidity/readme.md

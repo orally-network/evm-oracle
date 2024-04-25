@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
 
-import {OrallyPythiaConsumer} from "../consumers/OrallyPythiaConsumer.sol";
+import {OrallyPythiaConsumer} from "../OrallyPythiaConsumer.sol";
 
 interface ChainlinkStyleInterface {
     function decimals() external view returns (uint8);
@@ -38,16 +38,16 @@ contract ChainlinkStyleOracleComplete is OrallyPythiaConsumer, ChainlinkStyleInt
     }
 
     constructor(address _executorsRegistry, uint8 _decimals, string memory _description, uint256 _version)
-        OrallyPythiaConsumer(_executorsRegistry)
+        OrallyPythiaConsumer(_executorsRegistry, msg.sender)
     {
         decimals = _decimals;
         description = _description;
         version = _version;
     }
 
-    function updateRate(string memory _pairId, uint256 _rate, uint256 _decimals, uint256 _timestamp)
+    function updateRate(uint256 workflowId, string memory _pairId, uint256 _rate, uint256 _decimals, uint256 _timestamp)
         external
-        onlyExecutor
+        onlyExecutor(workflowId)
     {
         int256 answer = int256((_rate * (10 ** uint256(decimals))) / (10 ** _decimals));
         rounds[currentRoundId].answer = answer;

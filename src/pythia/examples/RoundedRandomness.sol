@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
 
-import {OrallyPythiaConsumer} from "../consumers/OrallyPythiaConsumer.sol";
+import {OrallyPythiaConsumer} from "../OrallyPythiaConsumer.sol";
 
 interface RoundedRandomnessInterface {
     function description() external view returns (string memory);
@@ -19,11 +19,11 @@ contract RoundedRandomness is OrallyPythiaConsumer, RoundedRandomnessInterface {
 
     mapping(uint80 => uint64) public rounds;
 
-    constructor(address _executorsRegistry, string memory _description) OrallyPythiaConsumer(_executorsRegistry) {
+    constructor(address _executorsRegistry, string memory _description) OrallyPythiaConsumer(_executorsRegistry, msg.sender) {
         description = _description;
     }
 
-    function updateRandom(uint64 _random) external onlyExecutor {
+    function updateRandom(uint256 workflowId, uint64 _random) external onlyExecutor(workflowId) {
         rounds[currentRoundId] = _random;
         unchecked {
             currentRoundId++;

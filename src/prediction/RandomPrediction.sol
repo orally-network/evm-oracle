@@ -40,7 +40,7 @@ contract RandomPrediction is PredictionGeneric {
     }
 
     // for adapting data if needed
-    function updateRandomNumeric(uint256 randomNumeric) public onlyExecutor {
+    function updateRandomNumeric(uint256 workflowId, uint256 randomNumeric) public onlyExecutor(workflowId) {
         uint random = randomNumeric % totalTickets;
 
         updateNumeric("random", random, 0, block.timestamp);

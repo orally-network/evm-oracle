@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
 
-import {OrallyPythiaConsumer} from "../consumers/OrallyPythiaConsumer.sol";
+import {OrallyPythiaConsumer} from "../OrallyPythiaConsumer.sol";
 
 interface ChainlinkStyleInterface {
     function decimals() external view returns (uint8);
@@ -21,13 +21,13 @@ contract OrallyPriceFeed is OrallyPythiaConsumer, ChainlinkStyleInterface {
     int256 public latestPrice;
 
     constructor(address _executorsRegistry, uint8 _decimals, string memory _description)
-        OrallyPythiaConsumer(_executorsRegistry)
+        OrallyPythiaConsumer(_executorsRegistry, msg.sender)
     {
         decimals = _decimals;
         description = _description;
     }
 
-    function updateRate(string memory, uint256 _rate, uint256 _decimals, uint256 _timestamp) external onlyExecutor {
+    function updateRate(uint256 workflowId, string memory, uint256 _rate, uint256 _decimals, uint256 _timestamp) external onlyExecutor(workflowId) {
         latestPrice = int256((_rate * (10 ** uint256(decimals))) / (10 ** _decimals));
         latestPriceTimestamp = _timestamp;
         latestUpdate = block.timestamp;

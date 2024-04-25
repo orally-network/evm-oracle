@@ -4,7 +4,7 @@ pragma solidity ^0.8.13;
 import "forge-std/Script.sol";
 import {console2} from "forge-std/console2.sol";
 
-import {RaffleExample} from "src/examples/RaffleExample.sol";
+import {RaffleExample} from "../src/apollo/examples/RaffleExample.sol";
 
 contract Deploy_RaffleExample is Script {
     address constant pythiaExecutorRegistry = 0x81f8573B46895f65C7658Aa3A0eB90578F7F2dC9;

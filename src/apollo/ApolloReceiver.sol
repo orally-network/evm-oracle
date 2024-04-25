@@ -1,23 +1,23 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.20;
 
-import {OrallyConsumer} from "../consumers/OrallyConsumer.sol";
-import {IApolloCoordinator} from "../interfaces/IApolloCoordinator.sol";
+import {OrallyApolloConsumer} from "./OrallyApolloConsumer.sol";
+import {IApolloCoordinator} from "./IApolloCoordinator.sol";
 
 /**
  * @title ApolloReceiver
- * @dev Inherits from OrallyConsumer to create a contract capable of receiving data from the Orally oracle network.
+ * @dev Inherits from OrallyApolloConsumer to create a contract capable of receiving data from the Orally oracle network.
  * This contract acts as a template for contracts that want to receive data from the Orally oracle,
  * with customizable handling of different data types and structures.
  */
-abstract contract ApolloReceiver is OrallyConsumer {
+abstract contract ApolloReceiver is OrallyApolloConsumer {
     IApolloCoordinator public apolloCoordinator;
 
     /**
      * @dev Constructor that initializes the ApolloReceiver contract with a specific registry address.
      * @param _registry Address of the registry contract in the Orally network.
      */
-    constructor(address _registry, address _apolloCoordinator) OrallyConsumer(_registry) {
+    constructor(address _registry, address _apolloCoordinator) OrallyApolloConsumer(_registry) {
         apolloCoordinator = IApolloCoordinator(_apolloCoordinator);
     }
 

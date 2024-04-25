@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
 
-import {ApolloReceiver} from "../apollo/ApolloReceiver.sol";
+import {ApolloReceiver} from "../ApolloReceiver.sol";
 
 contract RaffleExample is ApolloReceiver {
     uint256 maxNumberOfTickets;

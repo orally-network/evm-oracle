@@ -1,0 +1,29 @@
+{
+  "name": "@orally-network/solidity-sdk",
+  "version": "0.1.5",
+  "description": "Verify, automate, deliver data to smart contract from Orally Network",
+  "scripts": {
+    "format": "npx prettier --write .",
+    "check-abi": "git diff --exit-code abis",
+    "directory": "orally-sdk-solidity",
+    "pack": "sh pack.sh",
+    "publish": "npm publish --access public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/orally-network/evm-oracle.git"
+  },
+  "keywords": [
+    "orally",
+    "solidity",
+    "oracle",
+    "price",
+    "feeds"
+  ],
+  "author": "Orally Network Dev Team",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/orally-network/evm-oracle/issues"
+  },
+  "homepage": "https://github.com/orally-network/evm-oracle#readme"
+}

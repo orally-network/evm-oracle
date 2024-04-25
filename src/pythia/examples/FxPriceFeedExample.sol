@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
 
-import {OrallyPythiaConsumer} from "../consumers/OrallyPythiaConsumer.sol";
+import {OrallyPythiaConsumer} from "../OrallyPythiaConsumer.sol";
 
 interface IFxPriceFeedExample {
     function pair() external view returns (string memory);
@@ -21,14 +21,14 @@ contract FxPriceFeedExample is OrallyPythiaConsumer, IFxPriceFeedExample {
     uint256 public decimalPlaces;
 
     constructor(address _executorsRegistry, string memory _pair, address _baseTokenAddr, uint256 _decimalPlaces)
-        OrallyPythiaConsumer(_executorsRegistry)
+        OrallyPythiaConsumer(_executorsRegistry, msg.sender)
     {
         pair = _pair;
         baseTokenAddr = _baseTokenAddr;
         decimalPlaces = _decimalPlaces;
     }
 
-    function updateRate(string memory, uint256 _rate, uint256 _decimals, uint256 _timestamp) external onlyExecutor {
+    function updateRate(uint256 workflowId, string memory, uint256 _rate, uint256 _decimals, uint256 _timestamp) external onlyExecutor(workflowId) {
         rate = (_rate * (10 ** decimalPlaces)) / (10 ** _decimals); // normalise rate
         lastUpdate = _timestamp;
 

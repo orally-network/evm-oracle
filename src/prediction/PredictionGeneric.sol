@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
 
-import {OrallyConsumer} from "../consumers/OrallyConsumer.sol";
+import {OrallyPythiaConsumer} from "../pythia/OrallyPythiaConsumer.sol";
 
-contract PredictionGeneric is OrallyConsumer {
+contract PredictionGeneric is OrallyPythiaConsumer {
     uint256 public ticketPrice = 0.0015 ether;
-    address public owner;
 
     struct MultiBid {
         uint numericGuess;
@@ -39,15 +38,9 @@ contract PredictionGeneric is OrallyConsumer {
     event FeePercentageChanged(uint newFeePercentage);
     event DescriptionChanged(string newDescription);
 
-    constructor(address _executorsRegistry, string memory _description) OrallyConsumer(_executorsRegistry) {
-        owner = msg.sender;
+    constructor(address _executorsRegistry, string memory _description) OrallyPythiaConsumer(_executorsRegistry, msg.sender) {
         description = _description;
         auctionOpen = true;
-    }
-
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function.");
-        _;
     }
 
     function bid(uint _numericGuess) virtual public payable {
@@ -104,13 +97,13 @@ contract PredictionGeneric is OrallyConsumer {
     }
 
     // close auction before providing winning numeric to avoid reentrancy attack
-    function closeAuction() public onlyExecutor {
+    function closeAuction() internal {
         auctionOpen = false;
 
         emit RoundClosed(currentDay, totalTickets);
     }
 
-    function updateNumeric(string memory _dataFeedId, uint256 _numeric, uint256, uint256 _timestamp) public onlyExecutor {
+    function updateNumeric(string memory _dataFeedId, uint256 _numeric, uint256, uint256 _timestamp) internal {
         require(!auctionOpen, "Auction is still open.");
         currentNumeric = _numeric;
         lastUpdate = _timestamp;
@@ -164,7 +157,7 @@ contract PredictionGeneric is OrallyConsumer {
             address winner = winnerBid.bidderAddress;
             uint winnerPrize = prizePerTicket * winnerBid.ticketCount;
             uint fee = winnerPrize / 100 * feePercentage;
-            userBalances[owner] += fee;
+            userBalances[owner()] += fee;
             userBalances[winner] += (winnerPrize - fee);
 
             emit WinnerDeclared(winner, currentDay, winningNumeric, winnerPrize);
@@ -184,7 +177,7 @@ contract PredictionGeneric is OrallyConsumer {
     // Withdraw function for contract owner
     function ownerWithdraw() public onlyOwner {
         uint amount = address(this).balance;
-        payable(owner).transfer(amount);
+        payable(owner()).transfer(amount);
     }
 
     function setTicketPrice(uint256 _ticketPrice) public onlyOwner {

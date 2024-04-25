@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
 
-import {IOrallyPythiaSubscriptionsRegistry} from "./interfaces/IOrallyPythiaSubscriptionsRegistry.sol";
+import {IOrallyPythiaSubscriptionsRegistry} from "./IOrallyPythiaSubscriptionsRegistry.sol";
 
 /**
  * @title OrallyPythiaSubscriptionsRegistry
