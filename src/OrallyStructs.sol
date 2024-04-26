@@ -31,4 +31,30 @@ contract OrallyStructs {
         string params;
         uint256 timestamp;
     }
+
+    struct ReadLogsData {
+        address addr;
+        string[] topics;
+        bytes data;
+        string block_hash;
+        uint256 block_number;
+        string transaction_hash;
+        uint256 transaction_index;
+        string log_index;
+        string transaction_log_index;
+        string log_type;
+        bool removed;
+    }
+
+    struct ReadLogsMetadata {
+        uint256 chain_id;
+        uint256 block_from;
+        uint256 block_to;
+        string[] topics0;
+        string[] topics1;
+        string[] topics2;
+        string[] topics3;
+        address[] addresses;
+        uint256 timestamp;
+    }
 }

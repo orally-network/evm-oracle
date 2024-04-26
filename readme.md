@@ -97,7 +97,7 @@ pragma solidity ^0.8.20;
 import "@orally-network/solidity-sdk/IOrallyVerifierOracle.sol";
 import "@orally-network/solidity-sdk/OrallyStructs.sol";
 
-contract ExampleContract {
+contract ExampleReadContract {
     IOrallyVerifierOracle oracle;
 
     constructor(address orallyVerifierOracleAddress) {
@@ -110,10 +110,10 @@ contract ExampleContract {
         bytes calldata chainData
     ) public payable returns (uint256) {
         // Verify the chain data and get the balance of the user.
-        (bytes memory data, bytes memory metaData) = verifier.verifyChainData(chainData);
+        (bytes memory dataBytes, bytes memory metaBytes) = verifier.verifyChainData(chainData);
 
-        (uint256 balance) = abi.decode(data, (uint256));
-        (OrallyStructs.ReadContractMetadata memory meta) = abi.decode(metaData, (OrallyStructs.ReadContractMetadata));
+        (uint256 balance) = abi.decode(dataBytes, (uint256));
+        (OrallyStructs.ReadContractMetadata memory meta) = abi.decode(metaBytes, (OrallyStructs.ReadContractMetadata));
         
         // balance is the balance of the user of the requested token
         // meta.chainId is the chain id of the side chain
@@ -121,6 +121,38 @@ contract ExampleContract {
         // meta.method is the method that was called on the contract
         // meta.params is the parameters that were passed to the method
 
+        return balance;
+    }
+}
+
+contract ExampleGetLogsContract {
+    IOrallyVerifierOracle oracle;
+
+    constructor(address orallyVerifierOracleAddress) {
+        oracle = IOrallyVerifierOracle(orallyVerifierOracleAddress);
+    }
+
+    // chain data from
+    // https://tysiw-qaaaa-aaaak-qcikq-cai.icp0.io/read_logs_with_proof?chain_id=42161&block_from=204767826&block_to=204767826&topics0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&addresses=0xa533f744b179f2431f5395978e391107dc76e103&bytes=true
+    function getSideChainTransferLog(
+        bytes calldata chainData
+    ) public payable returns (uint256) {
+        // Verify the chain data and get the balance of the user.
+        (bytes memory dataBytes, bytes memory metaBytes) = verifier.verifyChainData(chainData);
+
+        (OrallyStructs.ReadLogsData[] memory data) = abi.decode(dataBytes, (OrallyStructs.ReadLogsData[]));
+        (OrallyStructs.ReadLogsMetadata memory meta) = abi.decode(metaBytes, (OrallyStructs.ReadLogsMetadata));
+
+        (uint256 transferTokenAmount) = abi.decode(data[0].data, (uint256));
+        
+        // transferTokenAmount is the amount of tokens transferred in the log
+        // meta.chainId is the chain id of the side chain
+        // meta.blockFrom is the block number from which the logs were read
+        // meta.blockTo is the block number to which the logs were read
+        // meta.topics0 is the topic of the log
+        // meta.addresses is the address of the contract from which the logs were read
+        // data[0].data is the data of the log
+        
         return balance;
     }
 }
