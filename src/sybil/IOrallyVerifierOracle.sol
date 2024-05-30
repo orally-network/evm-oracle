@@ -15,44 +15,152 @@ interface IOrallyVerifierOracle {
     event ReporterAdded(address indexed reporter);
     event ReporterRemoved(address indexed reporter);
     event PriceFeedSaved(string indexed pairId, uint256 price, uint256 decimals, uint256 timestamp);
+    event CustomNumberSaved(string indexed feedId, uint256 value, uint256 decimals);
+    event CustomStringSaved(string indexed feedId, string value);
 
     /**
-     * @notice Get the details of a specific price feed for cache.
-     * @param pairId The identifier for the currency pair.
+     * @notice Gets the fee for updating a feed.
+     * @param _data The packed data containing the feed and its metadata.
+     * @return The fee for updating the feed.
+     */
+    function getUpdateFee(bytes memory _data) external pure returns (uint256);
+
+    // Price Feeds
+
+    /**
+     * @notice Gets the price feed data for a given pair ID.
+     * @param pairId The unique identifier for the currency pair.
+     * @return The price feed data for the given pair ID.
      */
     function getPriceFeed(string memory pairId) external view returns (OrallyStructs.PriceFeed memory);
 
     /**
-     * @notice Verifies the authenticity of a packed message using a signature.
-     * @param _message The hash of the message being verified.
-     * @param _signature The digital signature associated with the message.
-     * @return bool Returns true if the signature is valid and from a trusted source.
+     * @notice Verifies the integrity and authenticity of price feed data, then returns it (if fee paid with API key / allowed domain).
+     * @param _data The packed byte array containing the price feed and its signature.
+     * @return Tuple of pair ID, price, decimals, and timestamp if the verification is successful.
      */
-    function verifyPacked(bytes32 _message, bytes memory _signature) external view returns (bool);
+    function verifyPriceFeed(bytes memory _data) external view returns (OrallyStructs.PriceFeed memory);
 
     /**
-     * @notice Verifies the authenticity and integrity of unpacked data elements with their signature.
-     * @param _pairId The identifier for the currency pair.
-     * @param _price The latest reported price for the currency pair.
-     * @param _decimals The number of decimal places for the reported price.
-     * @param _timestamp The timestamp when the data was signed.
-     * @param _signature The digital signature covering the data.
-     * @return bool Returns true if the signature is valid and from an authorized source.
+     * @notice Verifies, caches, and returns the details of a price feed (if fee paid with API key / allowed domain).
+     * Caching is performed to store the most recent and valid data.
+     * @param _data The packed data containing the price feed and its signature.
+     * @return Tuple of pair ID, price, decimals, and timestamp.
      */
-    function verifyUnpacked(
-        string memory _pairId,
-        uint256 _price,
-        uint256 _decimals,
-        uint256 _timestamp,
-        bytes memory _signature
-    ) external view returns (bool);
+    function updatePriceFeed(bytes memory _data) external returns (OrallyStructs.PriceFeed memory);
 
     /**
-     * @notice Unpacks a message containing price feed data.
-     * @param _message The packed message containing encoded price feed data.
-     * @return Tuple containing the pair ID, price, decimals, and timestamp extracted from the message.
+     * @notice Verifies the integrity and authenticity of price feed data, then returns it (if fee paid in transaction).
+     * @param _data The packed byte array containing the price feed and its signature.
+     * @return Tuple of pair ID, price, decimals, and timestamp if the verification is successful.
      */
-    function unpack(bytes32 _message) external pure returns (string memory, uint256, uint256, uint256);
+    function verifyPriceFeedWithFee(bytes calldata _data) external payable returns (OrallyStructs.PriceFeed memory);
+
+    /**
+     * @notice Verifies, caches, and returns the details of a price feed (if fee paid in transaction).
+     * Caching is performed to store the most recent and valid data.
+     * @param _data The packed data containing the price feed and its signature.
+     * @return Tuple of pair ID, price, decimals, and timestamp.
+     */
+    function updatePriceFeedWithFee(bytes memory _data) external payable returns (OrallyStructs.PriceFeed memory);
+
+    // --------------------------------------------------------------
+    // Custom Numbers
+
+    /**
+     * @notice Gets the custom number data for a given feed ID.
+     * @param _feedId The unique identifier for the custom number feed.
+     * @return The custom number data for the given feed ID.
+     */
+    function getCustomNumber(string memory _feedId) external view returns (OrallyStructs.CustomNumber memory);
+
+    /**
+     * @notice Verifies and returns custom numerical data from provided packed data.
+     * @param data The packed data containing custom numerical information and its signature.
+     * @return Tuple containing the feed ID, numerical value, and decimals.
+     */
+    function verifyCustomNumber(bytes memory data) external view returns (OrallyStructs.CustomNumber memory);
+
+    /**
+     * @notice Verifies, caches, and returns the details of a custom number feed (if fee paid with API key / allowed domain).
+     * Caching is performed to store the most recent and valid data.
+     * @param _data The packed data containing the custom number feed and its signature.
+     * @return Tuple of feed ID, numerical value, and decimals.
+     */
+    function updateCustomNumber(bytes memory _data) external returns (OrallyStructs.CustomNumber memory);
+
+    /**
+     * @notice Verifies the integrity and authenticity of custom number data, then returns it (if fee paid in transaction).
+     * @param _data The packed byte array containing the custom number data and its signature.
+     * @return Tuple of feed ID, numerical value, and decimals if the verification is successful.
+     */
+    function verifyCustomNumberWithFee(bytes memory _data) external payable returns (OrallyStructs.CustomNumber memory);
+
+    /**
+     * @notice Verifies, caches, and returns the details of a custom number feed (if fee paid in transaction).
+     * Caching is performed to store the most recent and valid data.
+     * @param _data The packed data containing the custom number feed and its signature.
+     * @return Tuple of feed ID, numerical value, and decimals.
+     */
+    function updateCustomNumberWithFee(bytes memory _data) external payable returns (OrallyStructs.CustomNumber memory);
+
+    // --------------------------------------------------------------
+    // Custom Strings
+
+    /**
+     * @notice Gets the custom string data for a given feed ID.
+     * @param _feedId The unique identifier for the custom string feed.
+     * @return The custom string data for the given feed ID.
+     */
+    function getCustomString(string memory _feedId) external view returns (OrallyStructs.CustomString memory);
+
+    /**
+     * @notice Verifies and returns custom string data from provided packed data.
+     * @param data The packed data containing custom string information and its signature.
+     * @return Tuple containing the feed ID and the string value.
+     */
+    function verifyCustomString(bytes memory data) external view returns (OrallyStructs.CustomString memory);
+
+    /**
+     * @notice Verifies, caches, and returns the details of a custom string feed (if fee paid with API key / allowed domain).
+     * Caching is performed to store the most recent and valid data.
+     * @param _data The packed data containing the custom string feed and its signature.
+     * @return Tuple of feed ID and the string value.
+     */
+    function updateCustomString(bytes memory _data) external returns (OrallyStructs.CustomString memory);
+
+    /**
+     * @notice Verifies the integrity and authenticity of custom string data, then returns it (if fee paid in transaction).
+     * @param _data The packed byte array containing the custom string data and its signature.
+     * @return Tuple of feed ID and the string value if the verification is successful.
+     */
+    function verifyCustomStringWithFee(bytes memory _data) external payable returns (OrallyStructs.CustomString memory);
+
+    /**
+     * @notice Verifies, caches, and returns the details of a custom string feed (if fee paid in transaction).
+     * Caching is performed to store the most recent and valid data.
+     * @param _data The packed data containing the custom string feed and its signature.
+     * @return Tuple of feed ID and the string value.
+     */
+    function updateCustomStringWithFee(bytes memory _data) external payable returns (OrallyStructs.CustomString memory);
+
+    // --------------------------------------------------------------
+
+    /**
+     * @notice Verifies and returns the details of a chain data feed from provided feed.
+     * @param _chainData The packed data containing the chain data feed and its signature.
+     * @return Tuple of chainData and metaData if the verification is successful.
+     */
+    function verifyChainData(bytes memory _chainData) external view returns (bytes memory, bytes memory);
+
+    /**
+     * @notice Verifies and returns the details of a chain data feed from provided feed.
+     * @param _chainData The packed data containing the chain data feed and its signature.
+     * @return Tuple of chainData and metaData if the verification is successful.
+     */
+    function verifyChainDataWithFee(bytes memory _chainData) external payable returns (bytes memory, bytes memory);
+
+    // Reporters
 
     /**
      * @notice Checks if an address is an authorized reporter.
@@ -60,40 +168,4 @@ interface IOrallyVerifierOracle {
      * @return bool Returns true if the address is authorized to submit data.
      */
     function isReporter(address _reporter) external view returns (bool);
-
-    /**
-     * @notice Verifies and returns the details of a price feed from provided data.
-     * @param data The packed data containing the price feed and its signature.
-     * @return Tuple of pair ID, price, decimals, and timestamp if the verification is successful.
-     */
-    function verifyPriceFeed(bytes memory data) external view returns (OrallyStructs.PriceFeed memory);
-
-    /**
-     * @notice Verifies, caches, and returns the details of a price feed.
-     * Caching is performed to store the most recent and valid data.
-     * @param data The packed data containing the price feed and its signature.
-     * @return Tuple of pair ID, price, decimals, and timestamp.
-     */
-    function verifyPriceFeedWithCache(bytes calldata data) external returns (OrallyStructs.PriceFeed memory);
-
-    /**
-     * @notice Verifies and returns custom numerical data from provided packed data.
-     * @param data The packed data containing custom numerical information and its signature.
-     * @return Tuple containing the feed ID, numerical value, and decimals.
-     */
-    function verifyCustomNumber(bytes calldata data) external returns (OrallyStructs.CustomNumber memory);
-
-    /**
-     * @notice Verifies and returns custom string data from provided packed data.
-     * @param data The packed data containing custom string information and its signature.
-     * @return Tuple containing the feed ID and the string value.
-     */
-    function verifyCustomString(bytes calldata data) external returns (OrallyStructs.CustomString memory);
-
-    /**
-     * @notice Verifies and returns the details of a chain data feed from provided data.
-     * @param data The packed data containing the chain data feed and its signature.
-     * @return Tuple of chainData and metaData if the verification is successful.
-     */
-    function verifyChainData(bytes calldata data) external returns (bytes memory, bytes memory);
 }

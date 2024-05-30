@@ -10,6 +10,12 @@ contract OrallyStructs {
         uint256 timestamp; // The timestamp when the price was last updated
     }
 
+    struct Meta {
+        string feedId;      // The identifier for the data feed
+        uint256 timestamp;  // The timestamp HTTP Gateway response happened
+        uint256 fee;        // The update fee in ether (could be zero)
+    }
+
     // Structure to store custom number data
     struct CustomNumber {
         string feedId;      // The identifier for the data feed
