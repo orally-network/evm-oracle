@@ -7,8 +7,8 @@ import {console2} from "forge-std/console2.sol";
 import {ApolloConsumerExample} from "../src/apollo/examples/ApolloConsumerExample.sol";
 
 contract Deploy_ApolloConsumerExample is Script {
-    address constant pythiaExecutorRegistry = 0x81f8573B46895f65C7658Aa3A0eB90578F7F2dC9;
-    address constant apolloCoordinator = 0x1FEa4E134c8BcDF6E1323C1Bf2Aa0899049CC754;
+    address constant pythiaExecutorRegistry = 0x0000000000000000000000000000000000000000;
+    address constant apolloCoordinator = 0x0000000000000000000000000000000000000000;
 
     uint256 constant TICKET_PRICE = 10000000000000000;
 

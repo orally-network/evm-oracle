@@ -11,9 +11,9 @@ import {ApolloCoordinator} from "src/apollo/ApolloCoordinator.sol";
 import {OrallyPriceFeed} from "../src/pythia/examples/OrallyPriceFeed.sol";
 
 contract Deploy_Set_AMA is Script {
-    address constant executorsRegistry = 0x81f8573B46895f65C7658Aa3A0eB90578F7F2dC9;
+    address constant executorsRegistry = 0x0000000000000000000000000000000000000000;
     // different between chains, could be added in different deployment script () on already deployed infrastructure
-    address constant amaAddress = 0x01518725f5c8ac6d936b309903B5BA48FE0b52fc;
+    address constant amaAddress = 0x0000000000000000000000000000000000000000;
 
     function run() public {
         console2.log("Running deploy script for the Factory contract");
