@@ -60,14 +60,49 @@ contract ExampleContract {
     }
 
     // price data from
-    // https://tysiw-qaaaa-aaaak-qcikq-cai.icp0.io/get_xrc_data_with_proof?id=DOGE/SHIB&bytes=true
+    // https://tysiw-qaaaa-aaaak-qcikq-cai.icp0.io/get_xrc_data_with_proof?id=DOGE/SHIB&bytes=true&api_key={YOUR_API_KEY}
     function getDogeShibPrice(
-        bytes calldata priceFeedData
+        bytes memory priceFeedData
     ) public payable returns (OrallyStructs.PriceFeed memory) {
         // Verify the price feed data and get the price, decimals, and timestamp.
         OrallyStructs.PriceFeed priceFeed = oracle.verifyPriceFeed(priceFeedData);
-        // if this price feed will be needed for later usage you can use `verifyPriceFeedWithCache` instead (+90k to gas) and access as `oracle.getPriceFeed("DOGE/SHIB")`
         
+        // priceFeed.price is the price of DOGE/SHIB
+        // priceFeed.decimals is the number of decimals in the price
+        // priceFeed.timestamp is the timestamp when price feed was aggregated
+
+        return priceFeed;
+    }
+
+    // with cache
+    // https://tysiw-qaaaa-aaaak-qcikq-cai.icp0.io/get_xrc_data_with_proof?id=DOGE/SHIB&bytes=true&API_KEY={YOUR_API_KEY}
+    function updatePriceFeed(
+        bytes memory priceFeedData
+    ) public payable returns (OrallyStructs.PriceFeed memory) {
+        // Verify the price feed data and get the price, decimals, and timestamp.
+        oracle.updatePriceFeed(priceFeedData);
+
+        // Get the price feed data from the cache.
+        OrallyStructs.PriceFeed priceFeed = oracle.getPriceFeed("DOGE/SHIB");
+
+        // priceFeed.price is the price of DOGE/SHIB
+        // priceFeed.decimals is the number of decimals in the price
+        // priceFeed.timestamp is the timestamp when price feed was aggregated
+
+        return priceFeed;
+    }
+
+    // without API key
+    // https://tysiw-qaaaa-aaaak-qcikq-cai.icp0.io/get_xrc_data_with_proof?id=DOGE/SHIB&bytes=true
+    function getDogeShibPriceWithoutApiKey(
+        bytes memory priceFeedData
+    ) public payable returns (OrallyStructs.PriceFeed memory) {
+        // Get the update fee for the price feed data.
+        uint256 fee = oracle.getUpdateFee(priceFeedData);
+        // Verify the price feed data and get the price, decimals, and timestamp.
+        OrallyStructs.PriceFeed priceFeed = oracle.verifyPriceFeedWithFee{ value: fee }(priceFeedData);
+        // if this price feed will be needed for later usage you can use `updatePriceFeedWithFee` instead (+90k to gas) and access as `oracle.getPriceFeed("DOGE/SHIB")`
+
         // priceFeed.price is the price of DOGE/SHIB
         // priceFeed.decimals is the number of decimals in the price
         // priceFeed.timestamp is the timestamp when price feed was aggregated
@@ -110,7 +145,8 @@ contract ExampleReadContract {
         bytes calldata chainData
     ) public payable returns (uint256) {
         // Verify the chain data and get the balance of the user.
-        (bytes memory dataBytes, bytes memory metaBytes) = verifier.verifyChainData(chainData);
+        (bytes memory dataBytes, bytes memory metaBytes) = oracle.verifyReadContractData(chainData);
+        // `verifyReadContractDataWithFee` for paying fee in the same transaction instead of API key
 
         (uint256 balance) = abi.decode(dataBytes, (uint256));
         (OrallyStructs.ReadContractMetadata memory meta) = abi.decode(metaBytes, (OrallyStructs.ReadContractMetadata));
@@ -138,7 +174,8 @@ contract ExampleGetLogsContract {
         bytes calldata chainData
     ) public payable returns (uint256) {
         // Verify the chain data and get the balance of the user.
-        (bytes memory dataBytes, bytes memory metaBytes) = verifier.verifyChainData(chainData);
+        (bytes memory dataBytes, bytes memory metaBytes) = oracle.verifyReadLogsData(chainData);
+        // `verifyReadLogsDataWithFee` for paying fee in the same transaction instead of API key
 
         (OrallyStructs.ReadLogsData[] memory data) = abi.decode(dataBytes, (OrallyStructs.ReadLogsData[]));
         (OrallyStructs.ReadLogsMetadata memory meta) = abi.decode(metaBytes, (OrallyStructs.ReadLogsMetadata));

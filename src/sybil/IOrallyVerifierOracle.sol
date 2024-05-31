@@ -54,7 +54,7 @@ interface IOrallyVerifierOracle {
      * @param _data The packed byte array containing the price feed and its signature.
      * @return Tuple of pair ID, price, decimals, and timestamp if the verification is successful.
      */
-    function verifyPriceFeedWithFee(bytes calldata _data) external payable returns (OrallyStructs.PriceFeed memory);
+    function verifyPriceFeedWithFee(bytes memory _data) external payable returns (OrallyStructs.PriceFeed memory);
 
     /**
      * @notice Verifies, caches, and returns the details of a price feed (if fee paid in transaction).
