@@ -6,6 +6,7 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {IOrallyVerifierOracle} from "./IOrallyVerifierOracle.sol";
 import {OrallyStructs} from "../OrallyStructs.sol";
+import {console2} from "@forge-std/console2.sol";
 
 /**
  * @title OrallyVerifierOracle
@@ -278,9 +279,9 @@ contract OrallyVerifierOracle is IOrallyVerifierOracle, OwnableUpgradeable {
      * @param _chainData The packed data containing the chain data feed and its signature.
      * @return Tuple of chainData and metaData if the verification is successful.
      */
-    function verifyChainData(bytes memory _chainData) external view returns (bytes memory, bytes memory) {
+    function verifyReadContractData(bytes memory _chainData) external view returns (bytes memory, bytes memory) {
         (bytes memory dataBytes, bytes memory metaBytes, bytes memory signature) = abi.decode(_chainData, (bytes, bytes, bytes));
-        (OrallyStructs.Meta memory meta) = abi.decode(metaBytes, (OrallyStructs.Meta));
+        (OrallyStructs.ReadContractMetadata memory meta) = abi.decode(metaBytes, (OrallyStructs.ReadContractMetadata));
 
         require(meta.fee == 0, "InvalidFee");
 
@@ -296,9 +297,45 @@ contract OrallyVerifierOracle is IOrallyVerifierOracle, OwnableUpgradeable {
      * @param _chainData The packed data containing the chain data feed and its signature.
      * @return Tuple of chainData and metaData if the verification is successful.
      */
-    function verifyChainDataWithFee(bytes memory _chainData) external payable returns (bytes memory, bytes memory) {
+    function verifyReadLogsData(bytes memory _chainData) external view returns (bytes memory, bytes memory) {
         (bytes memory dataBytes, bytes memory metaBytes, bytes memory signature) = abi.decode(_chainData, (bytes, bytes, bytes));
-        (OrallyStructs.Meta memory meta) = abi.decode(metaBytes, (OrallyStructs.Meta));
+        (OrallyStructs.ReadLogsMetadata memory meta) = abi.decode(metaBytes, (OrallyStructs.ReadLogsMetadata));
+
+        require(meta.fee == 0, "InvalidFee");
+
+        bytes memory signedMessage = abi.encodePacked(dataBytes, metaBytes);
+
+        require(_verifyPacked(keccak256(signedMessage), signature), "InvalidSignature");
+
+        return (dataBytes, metaBytes);
+    }
+
+    /**
+     * @notice Verifies and returns the details of a chain data feed from provided feed.
+     * @param _chainData The packed data containing the chain data feed and its signature.
+     * @return Tuple of chainData and metaData if the verification is successful.
+     */
+    function verifyReadContractDataWithFee(bytes memory _chainData) external payable returns (bytes memory, bytes memory) {
+        (bytes memory dataBytes, bytes memory metaBytes, bytes memory signature) = abi.decode(_chainData, (bytes, bytes, bytes));
+        (OrallyStructs.ReadContractMetadata memory meta) = abi.decode(metaBytes, (OrallyStructs.ReadContractMetadata));
+
+        require(msg.value >= meta.fee, "InsufficientFee");
+
+        bytes memory signedMessage = abi.encodePacked(dataBytes, metaBytes);
+
+        require(_verifyPacked(keccak256(signedMessage), signature), "InvalidSignature");
+
+        return (dataBytes, metaBytes);
+    }
+
+    /**
+     * @notice Verifies and returns the details of a chain data feed from provided feed.
+     * @param _chainData The packed data containing the chain data feed and its signature.
+     * @return Tuple of chainData and metaData if the verification is successful.
+     */
+    function verifyReadLogsDataWithFee(bytes memory _chainData) external payable returns (bytes memory, bytes memory) {
+        (bytes memory dataBytes, bytes memory metaBytes, bytes memory signature) = abi.decode(_chainData, (bytes, bytes, bytes));
+        (OrallyStructs.ReadLogsMetadata memory meta) = abi.decode(metaBytes, (OrallyStructs.ReadLogsMetadata));
 
         require(msg.value >= meta.fee, "InsufficientFee");
 

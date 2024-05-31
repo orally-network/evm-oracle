@@ -14,6 +14,7 @@ contract OrallyStructs {
         string feedId;      // The identifier for the data feed
         uint256 timestamp;  // The timestamp HTTP Gateway response happened
         uint256 fee;        // The update fee in ether (could be zero)
+//        string fee_symbol;  // The symbol of the fee token
     }
 
     // Structure to store custom number data
@@ -31,11 +32,14 @@ contract OrallyStructs {
 
     // Structure to store chain data feed and metadata
     struct ReadContractMetadata {
-        uint256 chain_id;
-        address contract_address;
-        string method;
-        string params;
-        uint256 timestamp;
+        uint256 chain_id;           // The chain ID of the contract
+        address contract_address;   // The address of the contract
+        string method;              // The method of the contract call
+        string params;              // The parameters of the contract call
+        uint256 block_number;       // The block number the contract call happened (0 if last one)
+        uint256 timestamp;          // The timestamp HTTP Gateway response happened
+        uint256 fee;                // The update fee in ether (could be zero)
+        string fee_symbol;          // The symbol of the fee token
     }
 
     struct ReadLogsData {
@@ -62,5 +66,8 @@ contract OrallyStructs {
         string[] topics3;
         address[] addresses;
         uint256 timestamp;
+
+        uint256 fee;        // The update fee in ether (could be zero)
+        string fee_symbol;  // The symbol of the fee token
     }
 }

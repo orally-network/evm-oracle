@@ -151,14 +151,28 @@ interface IOrallyVerifierOracle {
      * @param _chainData The packed data containing the chain data feed and its signature.
      * @return Tuple of chainData and metaData if the verification is successful.
      */
-    function verifyChainData(bytes memory _chainData) external view returns (bytes memory, bytes memory);
+    function verifyReadContractData(bytes memory _chainData) external view returns (bytes memory, bytes memory);
+
+    /**
+    * @notice Verifies and returns the details of a chain data feed from provided feed.
+     * @param _chainData The packed data containing the chain data feed and its signature.
+     * @return Tuple of chainData and metaData if the verification is successful.
+     */
+    function verifyReadLogsData(bytes memory _chainData) external view returns (bytes memory, bytes memory);
 
     /**
      * @notice Verifies and returns the details of a chain data feed from provided feed.
      * @param _chainData The packed data containing the chain data feed and its signature.
      * @return Tuple of chainData and metaData if the verification is successful.
      */
-    function verifyChainDataWithFee(bytes memory _chainData) external payable returns (bytes memory, bytes memory);
+    function verifyReadContractDataWithFee(bytes memory _chainData) external payable returns (bytes memory, bytes memory);
+
+    /**
+     * @notice Verifies and returns the details of a chain data feed from provided feed.
+     * @param _chainData The packed data containing the chain data feed and its signature.
+     * @return Tuple of chainData and metaData if the verification is successful.
+     */
+    function verifyReadLogsDataWithFee(bytes memory _chainData) external payable returns (bytes memory, bytes memory);
 
     // Reporters
 
