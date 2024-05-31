@@ -6,7 +6,7 @@ import {IOrallyExecutorsRegistry} from "./IOrallyExecutorsRegistry.sol";
 contract OrallyConsumer {
     IOrallyExecutorsRegistry private registry;
 
-    constructor(address _registry) {
+    function __OrallyConsumer_init(address _registry) internal {
         registry = IOrallyExecutorsRegistry(_registry);
     }
 

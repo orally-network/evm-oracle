@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.20;
 
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {OrallyConsumer} from "./OrallyConsumer.sol";
 
-contract OrallyMulticall is OrallyConsumer {
-    constructor(
-        address _executorsRegistry
-    ) OrallyConsumer(_executorsRegistry) {}
+contract OrallyMulticall is OrallyConsumer, Initializable {
+    function initialize(address _executorsRegistry) public initializer {
+        __OrallyConsumer_init(_executorsRegistry);
+    }
 
     struct Call {
         address target;

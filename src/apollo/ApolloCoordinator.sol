@@ -2,14 +2,17 @@
 pragma solidity 0.8.20;
 
 import {IApolloCoordinator} from "./IApolloCoordinator.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 /**
  * @title ApolloCoordinator
  * @dev This contract allows consumer contracts to request data from the Apollo Network.
  */
-contract ApolloCoordinator is IApolloCoordinator {
+contract ApolloCoordinator is IApolloCoordinator, Initializable {
     // Counter for generating unique request IDs
     uint256 public requestCounter = 0;
+
+    function initialize() public initializer {}
 
     /**
      * @notice Requests data from the Apollo network.
