@@ -63,7 +63,7 @@ contract ExampleContract {
     // https://tysiw-qaaaa-aaaak-qcikq-cai.icp0.io/get_xrc_data_with_proof?id=DOGE/SHIB&bytes=true&api_key={YOUR_API_KEY}
     function getDogeShibPrice(
         bytes memory priceFeedData
-    ) public payable returns (OrallyStructs.PriceFeed memory) {
+    ) public view returns (OrallyStructs.PriceFeed memory) {
         // Verify the price feed data and get the price, decimals, and timestamp.
         OrallyStructs.PriceFeed priceFeed = oracle.verifyPriceFeed(priceFeedData);
         
@@ -78,7 +78,7 @@ contract ExampleContract {
     // https://tysiw-qaaaa-aaaak-qcikq-cai.icp0.io/get_xrc_data_with_proof?id=DOGE/SHIB&bytes=true&API_KEY={YOUR_API_KEY}
     function updatePriceFeed(
         bytes memory priceFeedData
-    ) public payable returns (OrallyStructs.PriceFeed memory) {
+    ) public returns (OrallyStructs.PriceFeed memory) {
         // Verify the price feed data and get the price, decimals, and timestamp.
         oracle.updatePriceFeed(priceFeedData);
 
@@ -143,7 +143,7 @@ contract ExampleReadContract {
     // https://tysiw-qaaaa-aaaak-qcikq-cai.icp0.io/read_contract_with_proof?chain_id=42161&function_signature="function balanceOf(address account) external view returns (uint256)"&contract_addr=0xA533f744B179F2431f5395978e391107DC76e103&method=balanceOf&params=(0x654DFF41D51c230FA400205A633101C5C1f1969C)&bytes=true
     function getSideChainUserTokenBalance(
         bytes calldata chainData
-    ) public payable returns (uint256) {
+    ) public view returns (uint256) {
         // Verify the chain data and get the balance of the user.
         (bytes memory dataBytes, bytes memory metaBytes) = oracle.verifyReadContractData(chainData);
         // `verifyReadContractDataWithFee` for paying fee in the same transaction instead of API key
@@ -172,7 +172,7 @@ contract ExampleGetLogsContract {
     // https://tysiw-qaaaa-aaaak-qcikq-cai.icp0.io/read_logs_with_proof?chain_id=42161&block_from=204767826&block_to=204767826&topics0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&addresses=0xa533f744b179f2431f5395978e391107dc76e103&bytes=true
     function getSideChainTransferLog(
         bytes calldata chainData
-    ) public payable returns (uint256) {
+    ) public view returns (uint256) {
         // Verify the chain data and get the balance of the user.
         (bytes memory dataBytes, bytes memory metaBytes) = oracle.verifyReadLogsData(chainData);
         // `verifyReadLogsDataWithFee` for paying fee in the same transaction instead of API key
