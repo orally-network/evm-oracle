@@ -10,7 +10,7 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
  */
 contract ApolloCoordinator is IApolloCoordinator, Initializable {
     // Counter for generating unique request IDs
-    uint256 public requestCounter = 0;
+    uint256 public requestCounter;
 
     function initialize() public initializer {}
 

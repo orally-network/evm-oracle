@@ -9,6 +9,7 @@ import {OrallyExecutorsRegistry} from "../src/registry/OrallyExecutorsRegistry.s
 import {OrallyMulticall} from "../src/registry/OrallyMulticall.sol";
 import {ApolloCoordinator} from "src/apollo/ApolloCoordinator.sol";
 import {OrallyPriceFeed} from "../src/pythia/examples/OrallyPriceFeed.sol";
+import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
 contract Deploy_1 is Script {
     address constant sybilAddress = 0x0000000000000000000000000000000000000000;
@@ -25,20 +26,36 @@ contract Deploy_1 is Script {
 
         // deploy infrastructure
 
-        OrallyVerifierOracle verifier = new OrallyVerifierOracle();
-        verifier.initialize(msg.sender);
+        address verifierProxy = Upgrades.deployTransparentProxy(
+            "OrallyVerifierOracle.sol",
+            msg.sender,
+            abi.encodeCall(OrallyVerifierOracle.initialize, (msg.sender))
+        );
+        OrallyVerifierOracle verifier = OrallyVerifierOracle(verifierProxy);
         console2.log("OrallyVerifierOracle deployed at:", address(verifier));
 
-        OrallyExecutorsRegistry registry = new OrallyExecutorsRegistry();
-        registry.initialize();
+        address registryProxy = Upgrades.deployTransparentProxy(
+            "OrallyExecutorsRegistry.sol",
+            msg.sender,
+            abi.encodeCall(OrallyExecutorsRegistry.initialize, ())
+        );
+        OrallyExecutorsRegistry registry = OrallyExecutorsRegistry(registryProxy);
         console2.log("OrallyExecutorsRegistry deployed at:", address(registry));
 
-        OrallyMulticall multi = new OrallyMulticall();
-        multi.initialize(address(registry));
+        address multiProxy = Upgrades.deployTransparentProxy(
+            "OrallyMulticall.sol",
+            msg.sender,
+            abi.encodeCall(OrallyMulticall.initialize, (address(registry)))
+        );
+        OrallyMulticall multi = OrallyMulticall(multiProxy);
         console2.log("Multicall deployed at:", address(multi));
 
-        ApolloCoordinator coordinator = new ApolloCoordinator();
-        coordinator.initialize();
+        address coordinatorProxy = Upgrades.deployTransparentProxy(
+            "ApolloCoordinator.sol",
+            msg.sender,
+            abi.encodeCall(ApolloCoordinator.initialize, ())
+        );
+        ApolloCoordinator coordinator = ApolloCoordinator(coordinatorProxy);
         console2.log("ApolloCoordinator deployed at:", address(coordinator));
 
         // Setup

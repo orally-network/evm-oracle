@@ -26,7 +26,7 @@ contract OrallyMulticall is OrallyConsumer, Initializable {
         bytes returnData;
     }
 
-    event MulticallExecuted(Result[] resultExecutionData);
+    event MulticallExecuted(address indexed sender, Result[] resultExecutionData, Call[] callsData);
 
     function multicall(
         Call[] calldata calls
@@ -48,7 +48,7 @@ contract OrallyMulticall is OrallyConsumer, Initializable {
             returnData[i] = result;
         }
 
-        emit MulticallExecuted(returnData);
+        emit MulticallExecuted(msg.sender, returnData, calls);
 
         return returnData;
     }

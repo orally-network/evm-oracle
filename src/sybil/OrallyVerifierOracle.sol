@@ -6,7 +6,6 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {IOrallyVerifierOracle} from "./IOrallyVerifierOracle.sol";
 import {OrallyStructs} from "../OrallyStructs.sol";
-import {console2} from "@forge-std/console2.sol";
 
 /**
  * @title OrallyVerifierOracle

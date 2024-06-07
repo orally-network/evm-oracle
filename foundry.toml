@@ -2,6 +2,7 @@
 solc_version = '0.8.20'
 src = 'src'
 out = 'my-output-dir'
+fs_permissions = [{ access = "read", path = "my-output-dir" }]
 libs = ['lib']
 optimizer = true
 optimizer_runs = 200
@@ -22,3 +23,4 @@ arbitrum_goerli = "${ARBITRUM_GOERLI_RPC_URL}"
 167008 = { key = "verifyContract", url = "https://api.routescan.io/v2/network/testnet/evm/167008/etherscan" }
 204 = { key = "${OPBNB_API_KEY}", url = "https://api-opbnb.bscscan.com/api" }
 48899 = { key = "${ZIRCUIT_API_KEY}", url = "https://explorer.zircuit.com/api/contractVerifyHardhat" }
+11155111 = { key = "${ETHERSCAN_API_KEY}", url = "https://api-sepolia.etherscan.io/api" }
