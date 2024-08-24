@@ -18,6 +18,13 @@ interface IOrallyVerifierOracle {
     event CustomNumberSaved(string indexed feedId, uint256 value, uint256 decimals);
     event CustomStringSaved(string indexed feedId, string value);
 
+    /**
+     * @notice Gets the fee for updating a feed.
+     * @param _data The packed data containing the feed and its metadata.
+     * @return The fee for updating the feed.
+     */
+    function getUpdateFee(bytes memory _data) external pure returns (uint256);
+
     // Price Feeds
 
     /**
@@ -41,6 +48,21 @@ interface IOrallyVerifierOracle {
      * @return Tuple of pair ID, price, decimals, and timestamp.
      */
     function updatePriceFeed(bytes memory _data) external returns (OrallyStructs.PriceFeed memory);
+
+    /**
+     * @notice Verifies the integrity and authenticity of price feed data, then returns it (if fee paid in transaction).
+     * @param _data The packed byte array containing the price feed and its signature.
+     * @return Tuple of pair ID, price, decimals, and timestamp if the verification is successful.
+     */
+    function verifyPriceFeedWithFee(bytes memory _data) external payable returns (OrallyStructs.PriceFeed memory);
+
+    /**
+     * @notice Verifies, caches, and returns the details of a price feed (if fee paid in transaction).
+     * Caching is performed to store the most recent and valid data.
+     * @param _data The packed data containing the price feed and its signature.
+     * @return Tuple of pair ID, price, decimals, and timestamp.
+     */
+    function updatePriceFeedWithFee(bytes memory _data) external payable returns (OrallyStructs.PriceFeed memory);
 
     // --------------------------------------------------------------
     // Custom Numbers
@@ -67,6 +89,21 @@ interface IOrallyVerifierOracle {
      */
     function updateCustomNumber(bytes memory _data) external returns (OrallyStructs.CustomNumber memory);
 
+    /**
+     * @notice Verifies the integrity and authenticity of custom number data, then returns it (if fee paid in transaction).
+     * @param _data The packed byte array containing the custom number data and its signature.
+     * @return Tuple of feed ID, numerical value, and decimals if the verification is successful.
+     */
+    function verifyCustomNumberWithFee(bytes memory _data) external payable returns (OrallyStructs.CustomNumber memory);
+
+    /**
+     * @notice Verifies, caches, and returns the details of a custom number feed (if fee paid in transaction).
+     * Caching is performed to store the most recent and valid data.
+     * @param _data The packed data containing the custom number feed and its signature.
+     * @return Tuple of feed ID, numerical value, and decimals.
+     */
+    function updateCustomNumberWithFee(bytes memory _data) external payable returns (OrallyStructs.CustomNumber memory);
+
     // --------------------------------------------------------------
     // Custom Strings
 
@@ -92,6 +129,21 @@ interface IOrallyVerifierOracle {
      */
     function updateCustomString(bytes memory _data) external returns (OrallyStructs.CustomString memory);
 
+    /**
+     * @notice Verifies the integrity and authenticity of custom string data, then returns it (if fee paid in transaction).
+     * @param _data The packed byte array containing the custom string data and its signature.
+     * @return Tuple of feed ID and the string value if the verification is successful.
+     */
+    function verifyCustomStringWithFee(bytes memory _data) external payable returns (OrallyStructs.CustomString memory);
+
+    /**
+     * @notice Verifies, caches, and returns the details of a custom string feed (if fee paid in transaction).
+     * Caching is performed to store the most recent and valid data.
+     * @param _data The packed data containing the custom string feed and its signature.
+     * @return Tuple of feed ID and the string value.
+     */
+    function updateCustomStringWithFee(bytes memory _data) external payable returns (OrallyStructs.CustomString memory);
+
     // --------------------------------------------------------------
 
     /**
@@ -107,6 +159,20 @@ interface IOrallyVerifierOracle {
      * @return Tuple of chainData and metaData if the verification is successful.
      */
     function verifyReadLogsData(bytes memory _chainData) external view returns (bytes memory, bytes memory);
+
+    /**
+     * @notice Verifies and returns the details of a chain data feed from provided feed.
+     * @param _chainData The packed data containing the chain data feed and its signature.
+     * @return Tuple of chainData and metaData if the verification is successful.
+     */
+    function verifyReadContractDataWithFee(bytes memory _chainData) external payable returns (bytes memory, bytes memory);
+
+    /**
+     * @notice Verifies and returns the details of a chain data feed from provided feed.
+     * @param _chainData The packed data containing the chain data feed and its signature.
+     * @return Tuple of chainData and metaData if the verification is successful.
+     */
+    function verifyReadLogsDataWithFee(bytes memory _chainData) external payable returns (bytes memory, bytes memory);
 
     // Reporters
 
