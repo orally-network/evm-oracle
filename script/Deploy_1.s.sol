@@ -26,6 +26,13 @@ contract Deploy_1 is Script {
 
         // deploy infrastructure
 
+//        address transparentProxy = 0x76d67e374391DF6363B72dA8530035Ee5f27a3Da;
+//        Upgrades.upgradeProxy(
+//            transparentProxy,
+//            "OrallyVerifierOracleV2.sol:OrallyVerifierOracleV2",
+//            ""
+//        );
+
         address verifierProxy = Upgrades.deployTransparentProxy(
             "OrallyVerifierOracle.sol",
             msg.sender,
