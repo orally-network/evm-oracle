@@ -51,7 +51,9 @@ contract OrallyVerifierOracleV2 is IOrallyVerifierOracle, OwnableUpgradeable {
      * @return The stored price feed data.
      */
     function _storePriceFeed(OrallyStructs.PriceFeed memory _priceFeed) internal returns (OrallyStructs.PriceFeed memory) {
-        require(_priceFeed.timestamp > priceFeeds[_priceFeed.pairId].timestamp, "InvalidTimeStamp");
+        if (priceFeeds[_priceFeed.pairId].timestamp >= _priceFeed.timestamp) {
+            return priceFeeds[_priceFeed.pairId];
+        }
 
         priceFeeds[_priceFeed.pairId] = _priceFeed;
         emit PriceFeedSaved(_priceFeed.pairId, _priceFeed.price, _priceFeed.decimals, _priceFeed.timestamp);
